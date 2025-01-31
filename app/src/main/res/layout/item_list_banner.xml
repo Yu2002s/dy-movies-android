@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="xyz.jdynb.dymovies.model.vod.HomeVod.Banner" />
+
+        <import type="xyz.jdynb.dymovies.utils.BindingAdapters" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        tools:layout_height="200dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <xyz.jdynb.dymovies.view.RoundImageView
+                android:id="@+id/vod_img"
+                android:layout_width="120dp"
+                android:layout_height="200dp"
+                android:contentDescription="@string/banner_image"
+                android:scaleType="centerCrop"
+                imageUrl="@{m.pic}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/vod_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@{m.name}"
+                android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/vod_img"
+                app:layout_constraintTop_toTopOf="@id/vod_img"
+                tools:text="@string/app_name" />
+
+            <TextView
+                android:id="@+id/vod_status"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="10dp"
+                android:text="@{m.note}"
+                android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/vod_img"
+                app:layout_constraintTop_toBottomOf="@id/vod_name"
+                tools:text="@string/app_name" />
+
+            <TextView
+                android:id="@+id/vod_des"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:ellipsize="end"
+                android:maxLines="6"
+                android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                app:htmlText="@{m.des}"
+                app:layout_constraintBottom_toBottomOf="@id/vod_img"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/vod_img"
+                app:layout_constraintTop_toBottomOf="@id/vod_status"
+                tools:text="@string/app_name" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

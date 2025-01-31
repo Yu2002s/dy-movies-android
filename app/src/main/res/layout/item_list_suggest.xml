@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="m"
+            type="xyz.jdynb.dymovies.model.search.SearchSuggest" />
+
+        <import type="xyz.jdynb.dymovies.utils.BindingAdapters" />
+
+    </data>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip"
+        app:closeIconEnabled="true"
+        android:layout_marginStart="10dp"
+        tools:text="@string/app_name"
+        android:text="@{m.name}"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</layout>

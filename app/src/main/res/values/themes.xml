@@ -1,0 +1,22 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.DyMovies" parent="Theme.Material3.DynamicColors.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
+        <!--<item name="android:enforceStatusBarContrast" tools:targetApi="q">false</item>-->
+        <item name="materialCardViewStyle">@style/Widget.Material3.CardView.Filled</item>
+    </style>
+
+    <style name="Theme.DyMovies" parent="Base.Theme.DyMovies" />
+
+    <style name="BaseDialogStyle" parent="Theme.Material3.DayNight.Dialog">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+</resources>

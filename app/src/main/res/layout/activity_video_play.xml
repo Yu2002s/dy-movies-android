@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <xyz.jdynb.dymovies.view.player.DongYuPlayer
+            android:id="@+id/player"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/player_height" />
+
+        <com.google.android.material.tabs.TabLayout
+            app:tabMode="auto"
+            app:tabGravity="start"
+            android:id="@+id/detail_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <xyz.jdynb.dymovies.view.fix.ViewPager2Container
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/detail_vp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </xyz.jdynb.dymovies.view.fix.ViewPager2Container>
+
+    </LinearLayout>
+</layout>

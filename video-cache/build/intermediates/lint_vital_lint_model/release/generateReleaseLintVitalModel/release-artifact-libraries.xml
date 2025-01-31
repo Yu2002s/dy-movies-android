@@ -1,0 +1,23 @@
+<libraries>
+  <library
+      name="org.slf4j:slf4j-android:1.7.21@jar"
+      jars="D:\android\gradles\caches\modules-2\files-2.1\org.slf4j\slf4j-android\1.7.21\f4f6a07c00f3996d8db58c85a3d73377b40611eb\slf4j-android-1.7.21.jar"
+      resolved="org.slf4j:slf4j-android:1.7.21"/>
+  <library
+      name="com.coolerfall:android-http-download-manager:1.6.2@aar"
+      jars="D:\android\gradles\caches\8.9\transforms\e4739561c40fb57dc7017e16bb39c049\transformed\jetified-android-http-download-manager-1.6.2\jars\classes.jar"
+      resolved="com.coolerfall:android-http-download-manager:1.6.2"
+      folder="D:\android\gradles\caches\8.9\transforms\e4739561c40fb57dc7017e16bb39c049\transformed\jetified-android-http-download-manager-1.6.2"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+  <library
+      name="org.slf4j:slf4j-api:1.7.21@jar"
+      jars="D:\android\gradles\caches\modules-2\files-2.1\org.slf4j\slf4j-api\1.7.21\139535a69a4239db087de9bab0bee568bf8e0b70\slf4j-api-1.7.21.jar"
+      resolved="org.slf4j:slf4j-api:1.7.21"/>
+</libraries>

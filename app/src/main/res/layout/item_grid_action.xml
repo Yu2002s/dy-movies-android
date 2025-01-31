@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="m"
+            type="xyz.jdynb.dymovies.model.ui.Action" />
+
+        <import type="xyz.jdynb.dymovies.utils.BindingAdapters" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/item_action"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?selectableItemBackground"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_horizontal"
+            android:contentDescription="@{m.name}"
+            android:src="@{m.icon}"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:text="@{m.name}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center_horizontal"
+            tools:text="@string/app_name" />
+
+    </LinearLayout>
+
+</layout>
+

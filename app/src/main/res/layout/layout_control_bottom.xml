@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:animateLayoutChanges="true"
+    android:background="@drawable/bg_bottom">
+
+    <ImageButton
+        android:id="@+id/btn_play"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/baseline_play_arrow_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/play_next"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="24dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/baseline_skip_next_24"
+        app:layout_constraintBottom_toBottomOf="@id/btn_play"
+        app:layout_constraintStart_toEndOf="@id/btn_play"
+        app:layout_constraintTop_toTopOf="@id/btn_play"
+        app:layout_goneMarginStart="0dp" />
+
+    <TextView
+        android:id="@+id/current_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="00:00"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@id/btn_play"
+        app:layout_constraintStart_toStartOf="@id/btn_play" />
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/seekbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:maxHeight="4dp"
+        android:progressDrawable="@drawable/video_seekbar_bg"
+        android:secondaryProgressTint="#11ffff"
+        android:thumb="@drawable/video_seekbar_thumb"
+        android:thumbOffset="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/current_time"
+        app:layout_constraintEnd_toStartOf="@id/end_time"
+        app:layout_constraintStart_toEndOf="@id/current_time" />
+
+    <TextView
+        android:id="@+id/end_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:text="00:00"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/current_time"
+        app:layout_constraintEnd_toEndOf="@id/btn_switch_orientation" />
+
+    <TextView
+        android:id="@+id/danmaku_visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:padding="6dp"
+        android:text="弹幕开"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/btn_switch_orientation"
+        app:layout_constraintEnd_toStartOf="@id/selections"
+        app:layout_constraintTop_toTopOf="@id/btn_switch_orientation" />
+
+    <TextView
+        android:id="@+id/selections"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:padding="6dp"
+        android:text="选集"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/scale"
+        app:layout_constraintTop_toTopOf="@id/btn_switch_orientation"
+        app:layout_goneMarginStart="0dp"
+        tools:visibility="gone" />
+
+    <TextView
+        android:id="@+id/scale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:padding="6dp"
+        android:text="自适应"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/speed"
+        app:layout_constraintTop_toTopOf="@id/btn_switch_orientation"
+        app:layout_goneMarginStart="0dp"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:foreground="?selectableItemBackgroundBorderless"
+        android:padding="6dp"
+        android:text="1X"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/portrait"
+        app:layout_constraintTop_toTopOf="@id/btn_switch_orientation"
+        app:layout_goneMarginStart="0dp"
+        tools:visibility="visible" />
+
+    <ImageButton
+        android:id="@+id/portrait"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginEnd="32dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/baseline_unfold_more_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_switch_orientation" />
+
+    <ImageButton
+        android:id="@+id/btn_switch_orientation"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="?selectableItemBackgroundBorderless"
+        android:src="@drawable/baseline_zoom_out_map_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

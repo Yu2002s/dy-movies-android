@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">DyMovies</string>
+
+    <!-- 底部导航栏 -->
+    <string name="nav_home">首页</string>
+    <string name="nav_history">历史</string>
+    <string name="nav_setting">设置</string>
+    <string name="nav_download">下载</string>
+    <string name="nav_live">直播</string>
+
+    <!-- 播放器相关 -->
+    <string name="video_error">播放失败了，请尝试以下操作或检查网络状态</string>
+    <string name="refresh">刷新</string>
+    <string name="play_toast">请勿相信视频内的任何广告</string>
+
+    <!-- 界面状态 -->
+    <string name="empty">空空如也</string>
+    <string name="error">加载失败，可能网络问题或服务器维护中，请尝试点击刷新，如多次失败请切换线路或换源</string>
+    <string name="reload">重载</string>
+    <string name="switch_source">换源</string>
+    <string name="nav_mine">我的</string>
+    <string name="edit">编辑</string>
+    <string name="select_all">全选</string>
+    <string name="deselect">取消选择</string>
+    <string name="delete">删除</string>
+    <string name="error_tips">加载失败了，请稍后重试，点击刷新</string>
+    <string name="empty_tips">这里空空如也哦！</string>
+    <string name="vod_cover">影视图片</string>
+    <string name="searchbar_hint">请输入关键字搜索…</string>
+    <string name="banner_image">轮播图片</string>
+    <string name="all_type">所有分类</string>
+    <string name="lock">锁定</string>
+    <string name="vod_loading_tips">正在加载影片中…首次可能较慢，请稍后!</string>
+    <string name="play_tips">首次加载可能较慢，如多次卡顿可尝试切换线路，如无法解决可尝试下载后再观看。正常情况下拖进度也会加载较久，请耐心等待。</string>
+    <string name="search">搜索</string>
+    <string name="history_favorite">历史/收藏</string>
+    <string name="login_sign">登录/注册</string>
+</resources>

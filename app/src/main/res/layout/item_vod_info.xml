@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="xyz.jdynb.dymovies.model.vod.VodDetail" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/vod_info"
+        app:contentPadding="10dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <xyz.jdynb.dymovies.view.RoundImageView
+                android:id="@+id/vod_img"
+                imageUrl="@{m.pic}"
+                app:radius="20"
+                android:layout_width="90dp"
+                android:layout_height="140dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/vod_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{m.name}"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/vod_img"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="神探狄仁杰第一部" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/vod_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{String.format(`%s | %s | %s | %s`, m.director, m.year, m.area, m.lang)}"
+                android:textAppearance="?textAppearanceLabelMedium"
+                app:layout_constraintStart_toStartOf="@id/vod_name"
+                app:layout_constraintTop_toBottomOf="@id/vod_name"
+                tools:text="钱雁秋 2001 中文" />
+
+            <TextView
+                android:id="@+id/vod_des"
+                htmlText="@{m.des}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="6"
+                android:textAppearance="?textAppearanceLabelSmall"
+                app:layout_constraintEnd_toEndOf="@id/vod_name"
+                app:layout_constraintStart_toStartOf="@id/vod_name"
+                app:layout_constraintTop_toBottomOf="@id/vod_tag"
+                tools:text="电视剧《神探狄仁杰》是部历史侦探悬疑剧，也有些恐怖片的味道。导演为钱雁秋，前三部制片人为张文玲。主演为梁冠华、张子健、须乾、吕中、姜昕言等。本片生动、悬疑，恐怖、有趣，为不可多得的好片。" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

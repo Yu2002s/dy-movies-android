@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="m"
+            type="xyz.jdynb.dymovies.model.vod.VodType" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/item"
+        app:contentPadding="10dp">
+
+        <TextView
+            android:gravity="center_horizontal"
+            android:id="@+id/tv_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{m.name}"
+            android:textAppearance="?textAppearanceTitleMedium"
+            tools:text="@string/app_name" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

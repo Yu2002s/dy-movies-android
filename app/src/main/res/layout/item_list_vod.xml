@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="m"
+            type="xyz.jdynb.dymovies.model.vod.VodDetail" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        app:contentPadding="10dp"
+        android:id="@+id/vod_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <xyz.jdynb.dymovies.view.RoundImageView
+                android:id="@+id/vod_cover"
+                android:layout_width="70dp"
+                android:layout_height="100dp"
+                android:contentDescription="@string/vod_cover"
+                android:scaleType="centerCrop"
+                imageUrl="@{m.pic}"
+                app:radius="20"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/bg_small_card"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:text="@{m.lang}"
+                app:layout_constraintBottom_toBottomOf="@id/vod_cover"
+                app:layout_constraintEnd_toEndOf="@id/vod_cover"
+                tools:ignore="SmallSp"
+                tools:text="@string/app_name" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/cate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_small_card"
+                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:text="@{m.year}"
+                app:layout_constraintStart_toStartOf="@id/vod_cover"
+                app:layout_constraintTop_toTopOf="@id/vod_cover"
+                tools:ignore="SmallSp"
+                tools:text="@string/app_name" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/vod_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{m.name}"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/vod_cover"
+                app:layout_constraintTop_toTopOf="@id/vod_cover"
+                app:layout_constraintVertical_chainStyle="packed"
+                tools:text="@string/app_name" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_marginTop="4dp"
+                android:text="@{m.actor}"
+                android:id="@+id/vod_tag"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/vod_name"
+                app:layout_constraintTop_toBottomOf="@id/vod_name"
+                tools:text="@string/app_name" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_marginTop="4dp"
+                android:text="@{m.director}"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:id="@+id/vod_director"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/vod_name"
+                app:layout_constraintTop_toBottomOf="@id/vod_tag"
+                tools:text="导演: 钱雁秋" />
+
+            <!--<com.google.android.material.textview.MaterialTextView
+                android:id="@+id/vod_star"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="3"
+                android:textAppearance="@style/TextAppearance.Material3.LabelMedium"
+                app:layout_constraintBottom_toBottomOf="@id/vod_cover"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/vod_name"
+                app:layout_constraintTop_toBottomOf="@id/vod_director"
+                app:layout_constraintVertical_bias="0.0"
+                tools:text="主演: 张子健 钱雁秋111111111111111111111111111111" />-->
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>
