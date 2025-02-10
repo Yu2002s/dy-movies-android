@@ -136,10 +136,6 @@ public class DongYuPlayer extends BasePlayer {
      */
     private OnVideoChangeListener videoChangeListener;
 
-    // private OnVideoErrorBtnClickListener errorBtnClickListener;
-
-    // private OnSourceItemChangeListener sourceItemChangeListener;
-
     private DanmakuView mDanmakuView;
 
     private DanmakuContext mDanmakuContext;
@@ -190,10 +186,6 @@ public class DongYuPlayer extends BasePlayer {
     public void setVideoChangeListener(OnVideoChangeListener videoChangeListener) {
         this.videoChangeListener = videoChangeListener;
     }
-
-    /*public void setErrorBtnClickListener(OnVideoErrorBtnClickListener errorBtnClickListener) {
-        this.errorBtnClickListener = errorBtnClickListener;
-    }*/
 
     public DongYuPlayer(@NonNull Context context) {
         this(context, null);
@@ -407,6 +399,14 @@ public class DongYuPlayer extends BasePlayer {
         return mDanmakuView.isPrepared();
     }
 
+    public void switchDanmaku() {
+        if (isShowDanmaku()) {
+            hideDanmaku();
+        } else {
+            showDanmaku();
+        }
+    }
+
     public boolean showDanmaku() {
         SpUtils.INSTANCE.put(SP_NAME, SPConfig.PLAYER_SHOW_DANMAKU, true);
         bottomBinding.danmakuVisible.setText("弹幕开");
@@ -538,6 +538,7 @@ public class DongYuPlayer extends BasePlayer {
         if (mBaseDanmakuParser != null) {
             mBaseDanmakuParser.release();
         }
+        stopBroadcastReceiver();
     }
 
     public void setTitle(CharSequence title) {
@@ -761,6 +762,8 @@ public class DongYuPlayer extends BasePlayer {
         bottomBinding.portrait.setOnClickListener(v -> {
             switchPortrait();
         });
+
+        bottomBinding.danmakuVisible.setOnClickListener(v -> switchDanmaku());
     }
 
     @NonNull

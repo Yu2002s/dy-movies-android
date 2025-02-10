@@ -27,7 +27,15 @@ data class VodFavorite(
   @Column(nullable = false)
   @SerialName("updateAt")
   val updateAt: Long = System.currentTimeMillis()
-): LitePalSupport() {
+) : LitePalSupport() {
+
+  constructor(vodDetail: VodDetail) : this(
+    vodDetail.detailId,
+    vodDetail.title,
+    vodDetail.pic,
+    vodDetail.duration
+  )
+
   val id: Long = 0
 
   fun update() {

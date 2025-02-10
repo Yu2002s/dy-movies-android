@@ -50,7 +50,6 @@ class SelectionDialog(
         }
       }
     bindingAdapter.models = videoList
-    // bindingAdapter.checkedAll(false)
     val position = videoList.indexOfFirst {
       if (it.url == currentVideo) {
         it.isChecked = false

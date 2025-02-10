@@ -185,30 +185,7 @@ class VodDetailFragment : Fragment() {
               "download" -> showDownloadDialog()
               "screencast" -> player.headerBinding.videoProjection.callOnClick()
               "setting" -> player.headerBinding.videoSetting.callOnClick()
-              "favorite" -> {
-                scope {
-                  withDefault {
-                    Log.d(TAG, "favorite: $favorite")
-                    if (favorite == null) {
-                      it.name = "取消收藏"
-                      it.icon = R.drawable.baseline_favorite_24
-                      favorite = VodFavorite(
-                        id,
-                        vodDetail.title,
-                        vodDetail.pic,
-                        vodDetail.duration
-                      )
-                      favorite!!.save()
-                    } else {
-                      it.name = "收藏"
-                      it.icon = R.drawable.baseline_favorite_border_24
-                      LitePal.deleteAll<VodFavorite>("detailId = ?", id.toString())
-                      favorite = null
-                    }
-                  }
-                  it.notifyChange()
-                }
-              }
+              "favorite" -> handleFavorite(it)
             }
           }
 
@@ -539,13 +516,33 @@ class VodDetailFragment : Fragment() {
     }.models = sourceList.find { it.name == vodDetail.flag }?.videos
   }
 
+  private fun handleFavorite(action: Action) {
+    scope {
+      withDefault {
+        Log.d(TAG, "favorite: $favorite")
+        if (favorite == null) {
+          action.name = "取消收藏"
+          action.icon = R.drawable.baseline_favorite_24
+          favorite = VodFavorite(vodDetail)
+          favorite!!.save()
+        } else {
+          action.name = "收藏"
+          action.icon = R.drawable.baseline_favorite_border_24
+          LitePal.deleteAll<VodFavorite>("detailId = ?", id.toString())
+          favorite = null
+        }
+      }
+      action.notifyChange()
+    }
+  }
+
   private fun skipVideoStart() {
     // 跳过片头
     val skipStart = SPConfig.PLAYER_SKIP_START.getRequired(false)
     if (!skipStart) {
       return
     }
-    player.skipVideoStart = SPConfig.PLAYER_SKIP_START_TIME.getRequired(0L)
+    // player.skipVideoStart = SPConfig.PLAYER_SKIP_START_TIME.getRequired<Long>(0L)
   }
 
   private fun skipVideoEnd() {
@@ -554,7 +551,7 @@ class VodDetailFragment : Fragment() {
     if (!skipEnd) {
       return
     }
-    player.skipVideoEnd = SPConfig.PLAYER_SKIP_END_TIME.getRequired(0L)
+    // player.skipVideoEnd = SPConfig.PLAYER_SKIP_END_TIME.getRequired<Long>(0L)
   }
 
   override fun onDestroyView() {

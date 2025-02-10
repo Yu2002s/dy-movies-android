@@ -3,7 +3,7 @@ package xyz.jdynb.dymovies.config
 import xyz.jdynb.dymovies.BuildConfig
 
 object Api {
-  val BASE_URL = /*if (BuildConfig.DEBUG) "http://192.168.245.123" else*/ "http://dyys.jdynb.xyz"
+  val BASE_URL = /*if (BuildConfig.DEBUG) "http://192.168.198.123" else*/ "http://dyys.jdynb.xyz"
   private const val VOD = "/vods"
   const val VOD_TYPE = "/vodTypes"
   const val VOD_TYPE_ALL = "${VOD_TYPE}/all"
@@ -21,6 +21,8 @@ object Api {
   const val VOD_COMMENTS = "/vodComments"
 
   const val VOD_PARSE = "/vodParses"
+
+  const val APP_UPDATES = "/updates"
 
   /**
    * 爱奇艺搜索

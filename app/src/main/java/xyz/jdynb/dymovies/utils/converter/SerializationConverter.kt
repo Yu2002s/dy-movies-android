@@ -44,6 +44,9 @@ class SerializationConverter(
             val json = JSONObject(bodyString) // 获取JSON中后端定义的错误码和错误信息
             val srvCode = json.getString(this.code)
             if (srvCode == success) { // 对比后端自定义错误码
+              if (!json.has("data")) {
+                return null
+              }
               json.getString("data").parseBody<R>(kType)
             } else { // 错误码匹配失败, 开始写入错误异常
               val errorMessage = json.optString(message, NetConfig.app.getString(com.drake.net.R.string.no_error_message))

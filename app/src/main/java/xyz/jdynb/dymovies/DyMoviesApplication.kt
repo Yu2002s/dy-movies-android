@@ -83,6 +83,7 @@ class DyMoviesApplication : Application() {
   override fun onCreate() {
     super.onCreate()
     context = this
+    CrashHandler.getInstance().init()
     BRV.modelId = BR.m
     initNetConfig()
     initStateConfig()

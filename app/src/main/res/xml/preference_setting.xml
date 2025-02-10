@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="用户信息">
+        <Preference
+            app:icon="@drawable/baseline_person_24"
+            app:key="userinfo" />
+        <Preference
+            app:icon="@drawable/baseline_close_24"
+            app:key="login" />
+    </PreferenceCategory>
+</androidx.preference.PreferenceScreen>

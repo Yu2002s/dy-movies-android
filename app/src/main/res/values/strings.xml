@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DyMovies</string>
+    <string name="app_name">冬雨影视</string>
 
     <!-- 底部导航栏 -->
     <string name="nav_home">首页</string>
@@ -35,4 +35,6 @@
     <string name="search">搜索</string>
     <string name="history_favorite">历史/收藏</string>
     <string name="login_sign">登录/注册</string>
+    <string name="restart">重启</string>
+    <string name="feedback">反馈</string>
 </resources>

@@ -7,14 +7,7 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.Gravity
 import android.view.WindowManager
-import android.widget.TextView
-import androidx.core.app.DialogCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.setPadding
-import com.google.android.material.color.DynamicColors
-import com.google.android.material.color.MaterialColors
-import com.google.android.material.color.utilities.DynamicColor
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import xyz.jdynb.dymovies.R
 import xyz.jdynb.dymovies.utils.getWindowHeight
 import xyz.jdynb.dymovies.utils.getWindowWidth

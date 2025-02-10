@@ -1,6 +1,5 @@
 package xyz.jdynb.dymovies.base
 
-import android.os.Build
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.activity.enableEdgeToEdge
