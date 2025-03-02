@@ -2,10 +2,12 @@ package xyz.jdynb.dymovies.dialog
 
 import android.content.Context
 import android.os.Bundle
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.divider
-import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.grid
 import com.drake.brv.utils.setup
 import xyz.jdynb.dymovies.R
@@ -25,6 +27,13 @@ class SelectionDialog(
     super.onCreate(savedInstanceState)
     val recyclerView = RecyclerView(context)
     setContentView(recyclerView)
+
+    ViewCompat.setOnApplyWindowInsetsListener(window!!.decorView) { _, insets ->
+      recyclerView.clipToPadding = false
+      recyclerView.updatePadding(bottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom)
+      insets
+    }
+
     val bindingAdapter = recyclerView
       .grid(3)
       .divider {
@@ -40,7 +49,7 @@ class SelectionDialog(
           model.isChecked = checked
           model.notifyChange()
           if (checked) {
-            videoChangeListener?.onChanged(model, position)
+            videoChangeListener?.onVideoChanged(model, position)
           }
         }
         R.id.item.onFastClick {
@@ -50,13 +59,8 @@ class SelectionDialog(
         }
       }
     bindingAdapter.models = videoList
-    val position = videoList.indexOfFirst {
-      if (it.url == currentVideo) {
-        it.isChecked = false
-        true
-      } else false
-    }
-    if (position == -1) {
+    val position = videoList.indexOfFirst { it.url == currentVideo }
+    if (position < 0) {
       return
     }
     bindingAdapter.setChecked(position, true)

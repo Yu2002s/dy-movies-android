@@ -11,8 +11,8 @@
     </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/item_action"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/item_action"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -30,11 +30,11 @@
             tools:src="@tools:sample/avatars" />
 
         <TextView
-            android:text="@{m.name}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:gravity="center_horizontal"
+            android:text="@{m.name}"
             tools:text="@string/app_name" />
 
     </LinearLayout>

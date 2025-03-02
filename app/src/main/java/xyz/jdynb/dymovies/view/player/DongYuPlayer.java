@@ -3,7 +3,6 @@ package xyz.jdynb.dymovies.view.player;
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -48,11 +47,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import kotlinx.serialization.json.Json;
-import kotlinx.serialization.json.JsonKt;
 import master.flame.danmaku.controller.DrawHandler;
 import master.flame.danmaku.controller.IDanmakuView;
 import master.flame.danmaku.danmaku.loader.ILoader;
@@ -498,6 +493,14 @@ public class DongYuPlayer extends BasePlayer {
     }
 
     /**
+     * 获取当前的播放地址
+     * @return 当前播放地址
+     */
+    public String getCurrentVideoUrl() {
+        return currentVideoUrl;
+    }
+
+    /**
      * 是否开启投屏
      *
      * @return 投屏状态
@@ -755,7 +758,7 @@ public class DongYuPlayer extends BasePlayer {
                     return;
                 }
                 position++;
-                videoChangeListener.onChanged(videoList.get(position), position);
+                videoChangeListener.onVideoChanged(videoList.get(position), position);
             }
         });
 

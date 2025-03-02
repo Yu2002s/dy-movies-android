@@ -25,7 +25,7 @@ object Api {
   const val APP_UPDATES = "/updates"
 
   /**
-   * 爱奇艺搜索
+   * 爱奇艺搜索接口地址
    */
   const val IQIYI_SEARCH = "https://mesh.if.iqiyi.com/portal/lw/search/homePageV3"
 }

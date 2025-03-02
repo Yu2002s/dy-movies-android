@@ -1,11 +1,16 @@
 package xyz.jdynb.dymovies.model.vod
 
 import androidx.annotation.Keep
+import androidx.databinding.ObservableField
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.litepal.annotation.Column
 import org.litepal.crud.LitePalSupport
 
+/**
+ * 影片详情
+ */
 @Keep
 @Serializable
 data class VodDetail(
@@ -91,6 +96,12 @@ data class VodDetail(
 
   @SerialName("detailId")
   val id: Long = 0
+
+  /**
+   * 视频数量
+   */
+  @Column(ignore = true)
+  var videoCount = 0
 
   fun update() {
     update(id)

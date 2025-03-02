@@ -53,19 +53,7 @@ class VideoPlayActivity : AppCompatActivity(), ServiceConnection {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    // 获取系统window支持的模式
-    val modes = window.windowManager.defaultDisplay.supportedModes
-    // 对获取的模式，基于刷新率的大小进行排序，从小到大排序
-    modes.sortBy {
-      it.refreshRate
-    }
-
-    window.let {
-      val lp = it.attributes
-      // 取出最小的那一个刷新率，直接设置给window
-      lp.preferredDisplayModeId = modes.first().modeId
-      it.attributes = lp
-    }
+    fitDanmaku()
 
     WindowCompat.setDecorFitsSystemWindows(window, false)
     bindService(Intent(this, DownloadService::class.java), this, BIND_AUTO_CREATE)
@@ -101,6 +89,25 @@ class VideoPlayActivity : AppCompatActivity(), ServiceConnection {
         else -> null
       }
     }.attach()
+  }
+
+  /**
+   * 解决弹幕滚动重现重复的问题
+   */
+  private fun fitDanmaku() {
+    // 获取系统window支持的模式
+    val modes = window.windowManager.defaultDisplay.supportedModes
+    // 对获取的模式，基于刷新率的大小进行排序，从小到大排序
+    modes.sortBy {
+      it.refreshRate
+    }
+
+    window.let {
+      val lp = it.attributes
+      // 取出最小的那一个刷新率，直接设置给window
+      lp.preferredDisplayModeId = modes.first().modeId
+      it.attributes = lp
+    }
   }
 
   override fun onResume() {

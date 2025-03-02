@@ -11,6 +11,6 @@ interface OnVideoChangeListener {
    * @param vodVideo 播放地址
    * @param position 相对应的播放地址位置
    */
-  fun onChanged(vodVideo: VodVideo, position: Int)
+  fun onVideoChanged(vodVideo: VodVideo, position: Int)
 
 }
