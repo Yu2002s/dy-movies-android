@@ -64,7 +64,7 @@ class HomeVodFragment : Fragment() {
 
           R.layout.item_action -> loadActionList {
             when (it.id) {
-              "allCate" -> startActivity<AllTypeActivity>()
+              // "allCate" -> startActivity<AllTypeActivity>()
               "download" -> startActivity<DownloadActivity>()
               "history" -> startActivity<VodHistoryActivity>()
             }

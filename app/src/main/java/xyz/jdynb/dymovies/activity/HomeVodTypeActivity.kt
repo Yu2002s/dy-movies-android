@@ -3,10 +3,8 @@ package xyz.jdynb.dymovies.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import xyz.jdynb.dymovies.R
 import xyz.jdynb.dymovies.base.BaseActivity
 import xyz.jdynb.dymovies.databinding.ActivityVodTypeBinding
-import xyz.jdynb.dymovies.fragment.home.HomeVodTypeFragment
 import xyz.jdynb.dymovies.model.vod.VodType
 import xyz.jdynb.dymovies.utils.getSerializableArguments
 import xyz.jdynb.dymovies.utils.putSerializable
@@ -32,8 +30,8 @@ class HomeVodTypeActivity: BaseActivity() {
     supportActionBar?.title = vodType.name
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-    supportFragmentManager.beginTransaction()
+    /*supportFragmentManager.beginTransaction()
       .replace(R.id.fragment, HomeVodTypeFragment.newInstance(vodType))
-      .commit()
+      .commit()*/
   }
 }

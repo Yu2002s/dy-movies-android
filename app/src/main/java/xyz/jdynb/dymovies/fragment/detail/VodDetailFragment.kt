@@ -270,18 +270,21 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
    */
   private fun setVideoActions() {
     binding.actionRv.models = listOf(
-      Action("checkout", "切换线路", R.drawable.baseline_route_24),
+      Action("checkout", "换线路", R.drawable.baseline_route_24),
       Action("download", "下载", R.drawable.baseline_arrow_circle_down_24),
       Action("screencast", "投屏", R.drawable.baseline_live_tv_24),
       Action("setting", "设置", R.drawable.baseline_settings_24),
       Action(
         "favorite",
-        if (favorite == null) "收藏" else "取消收藏",
+        if (favorite == null) "收藏" else "取消",
         if (favorite == null) R.drawable.baseline_favorite_border_24 else R.drawable.baseline_favorite_24
       )
     )
   }
 
+  /**
+   * 设置影片明星列表
+   */
   private fun setVideoActors() {
     binding.actorRv.models = vodDetail.actor.split("[,/、，]".toRegex()).map { VodActor(it) }
   }
@@ -407,6 +410,9 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
     }
   }
 
+  /**
+   * 显示切换线路对话框
+   */
   private fun showCheckoutSourceDialog() {
     MaterialAlertDialogBuilder(requireContext()).apply {
       setTitle("选择线路")
@@ -497,19 +503,22 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
     }.models = sourceList.find { it.name == vodDetail.flag }?.videos
   }
 
+  /**
+   * 收藏影片
+   */
   private fun handleFavorite(action: Action) {
     scope {
       withDefault {
         Log.d(TAG, "favorite: $favorite")
         if (favorite == null) {
-          action.name = "取消收藏"
+          action.name = "取消"
           action.icon = R.drawable.baseline_favorite_24
           favorite = VodFavorite(vodDetail)
           favorite!!.save()
         } else {
           action.name = "收藏"
           action.icon = R.drawable.baseline_favorite_border_24
-          LitePal.deleteAll<VodFavorite>("detailId = ?", id.toString())
+          LitePal.deleteAll<VodFavorite>("detailId = ?", vodDetail.detailId.toString())
           favorite = null
         }
       }

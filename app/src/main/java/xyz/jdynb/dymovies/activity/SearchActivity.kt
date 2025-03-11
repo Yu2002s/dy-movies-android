@@ -100,7 +100,7 @@ class SearchActivity : BaseActivity(), MenuProvider {
       binding.suggestRv.models = withDefault {
         querySuggests()
       }
-      val result = Get<List<VodType>>(Api.VOD_TYPE).await()
+      val result = Get<List<VodType>>(Api.VOD_TYPE_PARENT).await()
       types.addAll(result)
       fragments.addAll(result.map {
         SearchFragment.newInstance(it.id)

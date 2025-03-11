@@ -48,6 +48,32 @@ class HomeVodTypeFragment : Fragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
+    val vodType = getSerializableArguments<VodType>("vodType")
+      ?: throw IllegalArgumentException()
+
+    binding.filterRv.setup {
+      singleMode = true
+      addType<VodType>(R.layout.item_filter)
+      onChecked { position, checked, allChecked ->
+        val model = getModel<VodType>(position)
+        model.isChecked = checked
+        model.notifyChange()
+      }
+      R.id.chip.onClick {
+        val model = getModel<VodType>()
+        if (model.isChecked) {
+          return@onClick
+        }
+        setChecked(layoutPosition, true)
+        vodType.id = model.id
+        vodType.pid = model.pid
+        binding.refresh.autoRefresh()
+      }
+    }.also {
+      it.models = vodType.children
+      it.setChecked(0, true)
+    }
+
     binding.rv.grid(3).divider {
       orientation = DividerOrientation.GRID
       setDivider(8, true)
@@ -61,10 +87,9 @@ class HomeVodTypeFragment : Fragment() {
 
     binding.refresh.onRefresh {
       scope {
-        val vodType =
-          getSerializableArguments<VodType>("vodType") ?: throw IllegalArgumentException()
         val result = Get<Page<Vod>>(Api.VOD_LIST_BY_TYPE + "/${vodType.id}") {
           param("page", index)
+          param("pid", vodType.pid)
         }.await()
         addData(result.data) {
           index < result.lastPage

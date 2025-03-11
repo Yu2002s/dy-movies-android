@@ -26,6 +26,7 @@ import xyz.jdynb.dymovies.fragment.detail.VodDetailFragment
 import xyz.jdynb.dymovies.fragment.detail.VodDetailFragment.Companion
 import xyz.jdynb.dymovies.model.page.Page
 import xyz.jdynb.dymovies.model.vod.VodDetail
+import xyz.jdynb.dymovies.utils.fitNavigationBar
 
 class SearchFragment : Fragment() {
 
@@ -72,12 +73,14 @@ class SearchFragment : Fragment() {
     val type = requireArguments().getInt("type")
     keyword = requireArguments().getString("keyword") ?: ""
 
-    ViewCompat.setOnApplyWindowInsetsListener(binding.searchRv) { v, insets ->
+    binding.searchRv.fitNavigationBar()
+
+    /*ViewCompat.setOnApplyWindowInsetsListener(binding.searchRv) { v, insets ->
       v as RecyclerView
       v.clipToPadding = false
       v.updatePadding(bottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom)
       insets
-    }
+    }*/
 
     Log.d(TAG, "onViewCreated: $keyword")
 
@@ -97,7 +100,7 @@ class SearchFragment : Fragment() {
       Log.d(TAG, "keyword: $keyword")
       scope {
         val result = Post<Page<VodDetail>>(Api.VOD_SEARCH) {
-          json("page" to index, "typeId" to type, "keyword" to keyword)
+          json("page" to index, "tid" to type, "keyword" to keyword)
         }.await()
         addData(result.data) {
           index < result.lastPage

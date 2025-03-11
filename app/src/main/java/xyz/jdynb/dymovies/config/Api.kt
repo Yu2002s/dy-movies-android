@@ -1,12 +1,13 @@
 package xyz.jdynb.dymovies.config
 
-import xyz.jdynb.dymovies.BuildConfig
-
 object Api {
-  val BASE_URL = /*if (BuildConfig.DEBUG) "http://192.168.198.123" else*/ "http://dyys.jdynb.xyz"
+  // http://192.168.28.77
+  val BASE_URL = "http://dyys.jdynb.xyz"/*if (BuildConfig.DEBUG) "http://192.168.198.123" else*/ //""
   private const val VOD = "/vods"
+  const val VOD_CATE = "/vodCates"
   const val VOD_TYPE = "/vodTypes"
   const val VOD_TYPE_ALL = "${VOD_TYPE}/all"
+  const val VOD_TYPE_PARENT = "${VOD_TYPE}/parent"
   const val VOD_LIST_BY_TYPE = "${VOD}/type"
   const val VOD_HOME = "/homes"
   const val TV_LIVE = "/tvLives"
