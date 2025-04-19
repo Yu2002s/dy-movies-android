@@ -32,7 +32,7 @@ public final class M3uConstants {
      * Durations SHOULD be rounded to the nearest integer. The remainder of the line following
      * the comma is the title of the media file.
      */
-    final static String EXTINF = "#EXTINF";
+    public final static String EXTINF = "#EXTINF";
 
 
     /**
@@ -166,17 +166,17 @@ public final class M3uConstants {
      * <p/>
      * #EXT-X-DISCONTINUITY
      */
-    final static String EXT_X_DISCONTINUITY = "#EXT-X-DISCONTINUITY";
+    public final static String EXT_X_DISCONTINUITY = "#EXT-X-DISCONTINUITY";
 
     /**
      * A holder class for Patterns.
      */
-    static class Patterns {
+    public static class Patterns {
         private Patterns() {
             throw new AssertionError();
         }
 
-        final static Pattern EXTINF = Pattern.compile(tagPattern(M3uConstants.EXTINF) + "\\s*(-1|[0-9\\.]*)\\s*(?:,(.*))?");
+        public final static Pattern EXTINF = Pattern.compile(tagPattern(M3uConstants.EXTINF) + "\\s*(-1|[0-9\\.]*)\\s*(?:,(.*))?");
 
         private static String tagPattern(String tagName) {
             return "\\s*" + tagName + "\\s*:\\s*";

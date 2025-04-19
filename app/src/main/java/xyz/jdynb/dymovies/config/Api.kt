@@ -1,8 +1,13 @@
 package xyz.jdynb.dymovies.config
 
+/**
+ * App 全局 Api 配置
+ */
 object Api {
-  // http://192.168.28.77
-  val BASE_URL = "http://dyys.jdynb.xyz"/*if (BuildConfig.DEBUG) "http://192.168.198.123" else*/ //""
+  // http://192.168.31.82
+  val BASE_URL = "http://dyys.jdynb.xyz"
+  // val BASE_URL = "http://192.168.31.82"
+  // val BASE_URL = "http://192.168.110.48"
   private const val VOD = "/vods"
   const val VOD_CATE = "/vodCates"
   const val VOD_TYPE = "/vodTypes"
@@ -10,9 +15,11 @@ object Api {
   const val VOD_TYPE_PARENT = "${VOD_TYPE}/parent"
   const val VOD_LIST_BY_TYPE = "${VOD}/type"
   const val VOD_HOME = "/homes"
+  const val VOD_LATEST = "${VOD}/latest"
   const val TV_LIVE = "/tvLives"
   const val VOD_DETAIL = "${VOD}/"
   const val VOD_VIDEO = "/vodVideos"
+  const val VOD_VIDEO_SOURCE = "${VOD_VIDEO}/source"
 
   const val VOD_SEARCH = "/vodSearchs"
 

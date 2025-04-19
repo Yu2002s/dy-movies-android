@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="xyz.jdynb.dymovies.utils.BindingAdapters" />
 
         <variable
@@ -16,217 +17,253 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!--<androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/detail_rv"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:paddingHorizontal="10dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />-->
+            android:layout_height="match_parent">
 
-         <androidx.core.widget.NestedScrollView
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/detail_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-             <LinearLayout
-                 android:id="@+id/detail_content"
-                 android:layout_width="match_parent"
-                 android:layout_height="match_parent"
-                 android:orientation="vertical">
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    app:contentPadding="10dp">
 
-                 <com.google.android.material.card.MaterialCardView
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_margin="10dp"
-                     app:contentPadding="10dp">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                     <androidx.constraintlayout.widget.ConstraintLayout
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content">
+                        <xyz.jdynb.dymovies.view.RoundImageView
+                            android:id="@+id/vod_img"
+                            imageUrl="@{detail.pic}"
+                            radius="@{10}"
+                            android:layout_width="70dp"
+                            android:layout_height="100dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:src="@tools:sample/avatars" />
 
-                         <xyz.jdynb.dymovies.view.RoundImageView
-                             android:id="@+id/vod_img"
-                             imageUrl="@{detail.pic}"
-                             radius="@{10}"
-                             android:layout_width="70dp"
-                             android:layout_height="100dp"
-                             app:layout_constraintStart_toStartOf="parent"
-                             app:layout_constraintTop_toTopOf="parent"
-                             tools:src="@tools:sample/avatars" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/vod_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="@{detail.name}"
+                            android:textAppearance="?attr/textAppearanceTitleLarge"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/vod_img"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="神探狄仁杰第一部" />
 
-                         <com.google.android.material.textview.MaterialTextView
-                             android:id="@+id/vod_name"
-                             android:layout_width="0dp"
-                             android:layout_height="wrap_content"
-                             android:layout_marginStart="10dp"
-                             android:text="@{detail.name}"
-                             android:textAppearance="?attr/textAppearanceTitleLarge"
-                             app:layout_constraintEnd_toEndOf="parent"
-                             app:layout_constraintStart_toEndOf="@id/vod_img"
-                             app:layout_constraintTop_toTopOf="parent"
-                             tools:text="神探狄仁杰第一部" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/vod_tag"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="@{String.format(`%s | %s | %s | %s`, detail.director, detail.year, detail.area, detail.lang)}"
+                            android:textAppearance="?textAppearanceLabelMedium"
+                            app:layout_constraintStart_toStartOf="@id/vod_name"
+                            app:layout_constraintTop_toBottomOf="@id/vod_name"
+                            tools:text="钱雁秋 2001 中文" />
 
-                         <com.google.android.material.textview.MaterialTextView
-                             android:layout_marginTop="10dp"
-                             android:id="@+id/vod_tag"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="@{String.format(`%s | %s | %s | %s`, detail.director, detail.year, detail.area, detail.lang)}"
-                             android:textAppearance="?textAppearanceLabelMedium"
-                             app:layout_constraintStart_toStartOf="@id/vod_name"
-                             app:layout_constraintTop_toBottomOf="@id/vod_name"
-                             tools:text="钱雁秋 2001 中文" />
+                        <!--<TextView
+                            android:id="@+id/vod_des"
+                            htmlText="@{detail.des}"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:ellipsize="end"
+                            android:maxLines="6"
+                            android:textAppearance="?textAppearanceLabelSmall"
+                            app:layout_constraintEnd_toEndOf="@id/vod_name"
+                            app:layout_constraintStart_toStartOf="@id/vod_name"
+                            app:layout_constraintTop_toBottomOf="@id/vod_tag"
+                            tools:text="电视剧《神探狄仁杰》是部历史侦探悬疑剧，也有些恐怖片的味道。导演为钱雁秋，前三部制片人为张文玲。主演为梁冠华、张子健、须乾、吕中、姜昕言等。本片生动、悬疑，恐怖、有趣，为不可多得的好片。" />-->
 
-                         <!--<TextView
-                             android:id="@+id/vod_des"
-                             htmlText="@{detail.des}"
-                             android:layout_width="0dp"
-                             android:layout_height="wrap_content"
-                             android:layout_marginTop="4dp"
-                             android:ellipsize="end"
-                             android:maxLines="6"
-                             android:textAppearance="?textAppearanceLabelSmall"
-                             app:layout_constraintEnd_toEndOf="@id/vod_name"
-                             app:layout_constraintStart_toStartOf="@id/vod_name"
-                             app:layout_constraintTop_toBottomOf="@id/vod_tag"
-                             tools:text="电视剧《神探狄仁杰》是部历史侦探悬疑剧，也有些恐怖片的味道。导演为钱雁秋，前三部制片人为张文玲。主演为梁冠华、张子健、须乾、吕中、姜昕言等。本片生动、悬疑，恐怖、有趣，为不可多得的好片。" />-->
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                     </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                 </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    app:contentPadding="10dp">
 
-                 <com.google.android.material.card.MaterialCardView
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_marginHorizontal="10dp"
-                     android:layout_marginBottom="10dp"
-                     app:contentPadding="10dp">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                     <androidx.constraintlayout.widget.ConstraintLayout
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/tv_actions"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="操作"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                         <TextView
-                             android:id="@+id/tv_actions"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="操作"
-                             android:textAppearance="?textAppearanceTitleMedium"
-                             app:layout_constraintStart_toStartOf="parent"
-                             app:layout_constraintTop_toTopOf="parent" />
+                        <!--<TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            app:drawableEndCompat="@drawable/baseline_keyboard_arrow_right_24"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="40集全" />-->
 
-                         <!--<TextView
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:gravity="center_vertical"
-                             app:drawableEndCompat="@drawable/baseline_keyboard_arrow_right_24"
-                             app:layout_constraintEnd_toEndOf="parent"
-                             app:layout_constraintTop_toTopOf="parent"
-                             tools:text="40集全" />-->
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/action_rv"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:orientation="vertical"
+                            android:nestedScrollingEnabled="false"
+                            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_actions"
+                            app:spanCount="5" />
 
-                         <androidx.recyclerview.widget.RecyclerView
-                             android:id="@+id/action_rv"
-                             android:layout_width="0dp"
-                             app:spanCount="5"
-                             android:orientation="vertical"
-                             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                             android:layout_height="wrap_content"
-                             android:layout_marginTop="8dp"
-                             app:layout_constraintEnd_toEndOf="parent"
-                             app:layout_constraintStart_toStartOf="parent"
-                             app:layout_constraintTop_toBottomOf="@id/tv_actions" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                     </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                 </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    app:contentPadding="10dp">
 
-                 <com.google.android.material.card.MaterialCardView
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_marginHorizontal="10dp"
-                     android:layout_marginBottom="10dp"
-                     app:contentPadding="10dp">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                     <androidx.constraintlayout.widget.ConstraintLayout
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content">
+                        <!--<TextView
+                            android:id="@+id/tv_selections"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@{`选集(` + detail.flag + `)`}"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="选集(lzm3u8)" />-->
 
-                         <TextView
-                             android:id="@+id/tv_selections"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="@{`选集(` + detail.flag + `)`}"
-                             tools:text="选集(lzm3u8)"
-                             android:textAppearance="?textAppearanceTitleMedium"
-                             app:layout_constraintStart_toStartOf="parent"
-                             app:layout_constraintTop_toTopOf="parent" />
+                        <com.google.android.material.tabs.TabLayout
+                            android:backgroundTint="@android:color/transparent"
+                            app:tabMode="scrollable"
+                            app:tabGravity="start"
+                            android:id="@+id/video_tab"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/tv_all_selection"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"/>
 
-                         <TextView
-                             android:id="@+id/tv_all_selection"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:gravity="center_vertical"
-                             app:drawableEndCompat="@drawable/baseline_keyboard_arrow_right_24"
-                             app:layout_constraintEnd_toEndOf="parent"
-                             app:layout_constraintTop_toTopOf="parent"
-                             android:text="@{detail.videoCount + `集全`}"
-                             tools:text="40集全" />
+                        <TextView
+                            android:layout_marginStart="10dp"
+                            app:drawableTint="?attr/colorPrimary"
+                            app:layout_constraintBottom_toBottomOf="@id/video_tab"
+                            android:id="@+id/tv_all_selection"
+                            android:layout_width="wrap_content"
+                            android:textColor="?attr/colorPrimary"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="@{detail.videoCount + `集全`}"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                            app:layout_constraintStart_toEndOf="@id/video_tab"
+                            app:drawableEndCompat="@drawable/baseline_keyboard_arrow_right_24"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="40集全" />
 
-                         <androidx.recyclerview.widget.RecyclerView
-                             android:id="@+id/section_rv"
-                             android:layout_width="0dp"
-                             android:orientation="horizontal"
-                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                             android:layout_height="wrap_content"
-                             android:layout_marginTop="8dp"
-                             app:layout_constraintEnd_toEndOf="parent"
-                             app:layout_constraintStart_toStartOf="parent"
-                             app:layout_constraintTop_toBottomOf="@id/tv_selections" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/section_rv"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            app:spanCount="2"
+                            visible="@{!detail.loadingVideos}"
+                            android:orientation="horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/video_tab" />
 
-                     </androidx.constraintlayout.widget.ConstraintLayout>
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:indeterminate="true"
+                            app:layout_constraintTop_toBottomOf="@id/video_tab"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            visible="@{detail.loadingVideos}"
+                            android:id="@+id/loading"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
 
-                 </com.google.android.material.card.MaterialCardView>
+                        <TextView
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/video_tab"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            android:padding="16dp"
+                            android:text="视频为空，请切换"
+                            visible="@{!detail.loadingVideos &amp;&amp; detail.videoCount == 0}"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
 
-                 <com.google.android.material.card.MaterialCardView
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:layout_marginHorizontal="10dp"
-                     android:layout_marginBottom="10dp"
-                     app:contentPadding="10dp">
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                     <androidx.constraintlayout.widget.ConstraintLayout
-                         android:layout_width="match_parent"
-                         android:layout_height="wrap_content">
+                </com.google.android.material.card.MaterialCardView>
 
-                         <TextView
-                             android:id="@+id/tv_actors"
-                             android:layout_width="wrap_content"
-                             android:layout_height="wrap_content"
-                             android:text="演员"
-                             android:textAppearance="?textAppearanceTitleMedium"
-                             app:layout_constraintStart_toStartOf="parent"
-                             app:layout_constraintTop_toTopOf="parent" />
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    app:contentPadding="10dp">
 
-                         <androidx.recyclerview.widget.RecyclerView
-                             android:id="@+id/actor_rv"
-                             android:layout_width="0dp"
-                             app:spanCount="3"
-                             android:orientation="horizontal"
-                             app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-                             android:layout_height="wrap_content"
-                             android:layout_marginTop="8dp"
-                             app:layout_constraintEnd_toEndOf="parent"
-                             app:layout_constraintStart_toStartOf="parent"
-                             app:layout_constraintTop_toBottomOf="@id/tv_actors" />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                     </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/tv_actors"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="演员"
+                            android:textAppearance="?textAppearanceTitleMedium"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                 </com.google.android.material.card.MaterialCardView>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/actor_rv"
+                            android:nestedScrollingEnabled="false"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal"
+                            app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tv_actors"
+                            app:spanCount="3" />
 
-             </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-         </androidx.core.widget.NestedScrollView>
+                </com.google.android.material.card.MaterialCardView>
+
+                <include layout="@layout/item_play_tips" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
     </com.drake.statelayout.StateLayout>
 

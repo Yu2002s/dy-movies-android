@@ -17,6 +17,10 @@
     <style name="BaseDialogStyle" parent="Theme.Material3.DayNight.Dialog">
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="isMaterial3DynamicColorApplied">true</item>
     </style>
 
+    <string name="SlideAnim">
+
+    </string>
 </resources>

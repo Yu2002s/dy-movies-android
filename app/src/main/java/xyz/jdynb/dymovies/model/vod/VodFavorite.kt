@@ -1,8 +1,10 @@
 package xyz.jdynb.dymovies.model.vod
 
 import androidx.annotation.Keep
+import androidx.databinding.ObservableBoolean
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import org.litepal.annotation.Column
 import org.litepal.crud.LitePalSupport
 
@@ -37,6 +39,14 @@ data class VodFavorite(
   )
 
   val id: Long = 0
+
+  @Column(ignore = true)
+  @Transient
+  var isChecked = ObservableBoolean(false)
+
+  @Column(ignore = true)
+  @Transient
+  var isVisibleCheck = ObservableBoolean(false)
 
   fun update() {
     update(id)

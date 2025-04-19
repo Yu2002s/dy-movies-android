@@ -1,7 +1,7 @@
 package xyz.jdynb.dymovies.config
 
 /**
- * SharedPreference key配置
+ * SharedPreference key 配置
  */
 class SPConfig {
 

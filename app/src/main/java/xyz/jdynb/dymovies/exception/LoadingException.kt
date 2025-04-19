@@ -1,5 +1,6 @@
 package xyz.jdynb.dymovies.exception
 
-class LoadingException(message: String): RuntimeException(message) {
-
-}
+/**
+ * 自定义异常，加载异常
+ */
+class LoadingException(message: String): RuntimeException(message)

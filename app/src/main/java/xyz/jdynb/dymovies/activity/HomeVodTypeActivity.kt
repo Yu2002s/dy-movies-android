@@ -12,9 +12,12 @@ import xyz.jdynb.dymovies.utils.putSerializable
 class HomeVodTypeActivity: BaseActivity() {
 
   companion object {
+
+    private const val PARAM_VOD_TYPE = "vodType"
+
     fun actionStart(context: Context, vodType: VodType) {
       val intent = Intent(context, HomeVodTypeActivity::class.java)
-      intent.putSerializable("vodType", vodType)
+      intent.putSerializable(PARAM_VOD_TYPE, vodType)
       context.startActivity(intent)
     }
   }
@@ -25,13 +28,9 @@ class HomeVodTypeActivity: BaseActivity() {
     setContentView(binding.root)
     setSupportActionBar(binding.toolbar)
 
-    val vodType = getSerializableArguments<VodType>("vodType") ?: return
+    val vodType = getSerializableArguments<VodType>(PARAM_VOD_TYPE) ?: return
 
     supportActionBar?.title = vodType.name
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-    /*supportFragmentManager.beginTransaction()
-      .replace(R.id.fragment, HomeVodTypeFragment.newInstance(vodType))
-      .commit()*/
   }
 }

@@ -17,6 +17,8 @@ import java.io.InterruptedIOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.danikula.videocache.Preconditions.checkNotNull;
 import static com.danikula.videocache.ProxyCacheUtils.DEFAULT_BUFFER_SIZE;
@@ -53,6 +55,7 @@ public class HttpUrlSource implements Source {
     public HttpUrlSource(String url, SourceInfoStorage sourceInfoStorage, HeaderInjector headerInjector) {
         this.sourceInfoStorage = checkNotNull(sourceInfoStorage);
         this.headerInjector = checkNotNull(headerInjector);
+
         SourceInfo sourceInfo = sourceInfoStorage.get(url);
         this.sourceInfo = sourceInfo != null ? sourceInfo :
                 new SourceInfo(url, Integer.MIN_VALUE, ProxyCacheUtils.getSupposablyMime(url));

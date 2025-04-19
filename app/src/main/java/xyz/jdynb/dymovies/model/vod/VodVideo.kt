@@ -4,6 +4,8 @@ import androidx.annotation.Keep
 import androidx.databinding.BaseObservable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.litepal.LitePal
+import org.litepal.crud.LitePalSupport
 
 @Keep
 @Serializable

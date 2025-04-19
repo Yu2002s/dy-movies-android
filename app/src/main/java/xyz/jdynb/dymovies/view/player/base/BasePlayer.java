@@ -29,6 +29,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.GravityInt;
@@ -191,6 +192,7 @@ public class BasePlayer extends FrameLayout implements PlayerTouchListener, Play
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
         initView();
+        initViewListener();
         initWindow();
         handleBackEvent();
 
@@ -1062,6 +1064,13 @@ public class BasePlayer extends FrameLayout implements PlayerTouchListener, Play
                 Log.i(TAG, "surfaceDestroyed");
             }
         });
+    }
+
+    private void initViewListener() {
+        /*binding.btnRefresh.setOnClickListener(v -> {
+            refresh();
+            UtilsKt.showToast("正在尝试手动刷新...", Toast.LENGTH_SHORT);
+        });*/
     }
 
     @SuppressLint("SourceLockedOrientationActivity")

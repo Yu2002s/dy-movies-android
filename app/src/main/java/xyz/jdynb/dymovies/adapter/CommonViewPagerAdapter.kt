@@ -6,6 +6,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import kotlin.reflect.KClass
 
+/**
+ * 通用的 ViewPager2 adapter
+ */
 class CommonViewPagerAdapter(
   fm: FragmentManager,
   lifecycle: Lifecycle,

@@ -1,14 +1,18 @@
 package xyz.jdynb.dymovies.fragment.detail
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import com.danikula.videocache.parser.Playlist
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.reflect.copyType
@@ -16,12 +20,17 @@ import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
+import com.drake.brv.utils.staggered
 import com.drake.net.Get
 import com.drake.net.scope.NetCoroutineScope
 import com.drake.net.utils.scope
+import com.drake.net.utils.scopeDialog
+import com.drake.net.utils.scopeNetLife
 import com.drake.net.utils.withDefault
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.uaoanlao.tv.Screen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -40,17 +49,21 @@ import xyz.jdynb.dymovies.databinding.FragmentVodDetailBinding
 import xyz.jdynb.dymovies.databinding.ItemListSelectionBinding
 import xyz.jdynb.dymovies.dialog.SelectionDialog
 import xyz.jdynb.dymovies.event.OnVideoChangeListener
+import xyz.jdynb.dymovies.event.OnVideoSkipChangeListener
 import xyz.jdynb.dymovies.model.ui.Action
 import xyz.jdynb.dymovies.model.vod.VideoProxy
 import xyz.jdynb.dymovies.model.vod.VodActor
 import xyz.jdynb.dymovies.model.vod.VodDetail
 import xyz.jdynb.dymovies.model.vod.VodFavorite
 import xyz.jdynb.dymovies.model.vod.VodParseUrl
+import xyz.jdynb.dymovies.model.vod.VodProvider
 import xyz.jdynb.dymovies.model.vod.VodSource
+import xyz.jdynb.dymovies.model.vod.VodSourceVideo
 import xyz.jdynb.dymovies.model.vod.VodVideo
 import xyz.jdynb.dymovies.utils.DanmakuUtils
 import xyz.jdynb.dymovies.utils.SpUtils.getRequired
 import xyz.jdynb.dymovies.utils.fitNavigationBar
+import xyz.jdynb.dymovies.utils.showToast
 import xyz.jdynb.dymovies.utils.startActivity
 import xyz.jdynb.dymovies.view.player.DongYuPlayer
 import xyz.jdynb.dymovies.view.player.base.BasePlayer
@@ -70,9 +83,16 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
   private lateinit var vodDetail: VodDetail
 
   /**
-   * 数据源列表
+   * 源列表
    */
-  private val sourceList = mutableListOf<VodSource>()
+  private val vodSources = mutableListOf<VodProvider>()
+
+  /**
+   * 影片视频列表
+   */
+  private val vodVideos = mutableListOf<VodVideo>()
+
+  private var currentSelectedFlag = ""
 
   /**
    * 播放器实例
@@ -109,8 +129,6 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
 
     // 初始化 VideoPlayer 的一些事件
     initPlayerEvents()
-    // 自适应底部导航栏
-    // binding.detailRv.fitNavigationBar()
 
     initViews()
     initViewEvents()
@@ -134,9 +152,10 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
         /**
          * 影视源列表
          */
-        val sourcesResult = async {
-          Get<List<VodSource>>(Api.VOD_VIDEO) {
-            param("name", vodDetail.name)
+        val sourceVideoResult = async {
+          Get<VodSourceVideo>(Api.VOD_VIDEO_SOURCE) {
+            addQuery("vid", vodDetail.vid)
+            addQuery("flag", vodDetail.flag)
           }.await()
         }
 
@@ -150,17 +169,20 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
         // 弹幕地址集合列表
         val danmakuUrls = danmakuUrlsResult.await()
         // 影视源列表
-        val sources = sourcesResult.await()
+        val sourceVideo = sourceVideoResult.await()
         // 收藏信息
         favorite = favoriteResult.await()
-        sourceList.addAll(sources)
         // 设置弹幕
         player.setDanmakus(danmakuUrls)
+        // 设置采集源和视频数据
+        setSourcesAndVideos(sourceVideo)
         // 演员列表
         setVideoActors()
         binding.detail = vodDetail
+        (requireActivity() as VideoPlayActivity).vodTypeId = vodDetail.tid
         setSelectionsList()
         setVideoActions()
+        setSkipTimes()
       }
     }.apply {
       loadingLayout = R.layout.layout_vod_loading
@@ -181,19 +203,22 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
           FrameLayout.LayoutParams.WRAP_CONTENT
       }
 
-      onChecked { position, checked, allChecked ->
+      onChecked { position, checked, _ ->
         val model = getModel<VodVideo>(position)
         model.isChecked = checked
         model.notifyChange()
         if (checked) {
-          onVideoChanged(model, position)
+          if (vodDetail.flag != model.flag) {
+            player.setVideoList(vodVideos, vodDetail.videoUrl)
+          }
+          vodDetail.flag = model.flag
         }
       }
 
       R.id.item.onFastClick {
         val model = getModel<VodVideo>()
         if (model.isChecked) return@onFastClick
-        setChecked(layoutPosition, !model.isChecked)
+        onVideoChanged(model, layoutPosition)
       }
     }
 
@@ -204,7 +229,7 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
       R.id.item_action.onClick {
         val model = getModel<Action>()
         when (model.id) {
-          "checkout" -> showCheckoutSourceDialog()
+          // "checkout" -> showCheckoutSourceDialog()
           "download" -> showDownloadDialog()
           "screencast" -> player.headerBinding.videoProjection.callOnClick()
           "setting" -> player.headerBinding.videoSetting.callOnClick()
@@ -223,46 +248,86 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
    */
   @Suppress("UNCHECKED_CAST")
   private fun initViewEvents() {
+
+    // 全部选集区域
     binding.tvAllSelection.setOnClickListener {
-      SelectionDialog(
-        requireContext(),
-        binding.sectionRv.models as List<VodVideo>,
-        vodDetail.videoUrl
-      ).also {
-        it.videoChangeListener = object : OnVideoChangeListener {
-          override fun onVideoChanged(vodVideo: VodVideo, position: Int) {
-            setSelectionPosition(position)
-          }
-        }
+      val videos = binding.sectionRv.models as List<VodVideo>
+      if (videos.isEmpty()) {
+        "当前视频列表为空，请切换".showToast()
+        return@setOnClickListener
+      }
+      SelectionDialog(requireContext(), videos, vodDetail.videoUrl).also {
+        // 全部选集对话框选中事件
+        it.videoChangeListener = this
         it.show()
       }
     }
-  }
 
-  /**
-   * 设置选集
-   */
-  private fun setSelectionPosition(position: Int) {
-    if (position < 0) {
-      return
+    binding.cardInfo.setOnClickListener {
+      MaterialAlertDialogBuilder(requireContext())
+        .setTitle(vodDetail.name)
+        .setMessage(HtmlCompat.fromHtml(vodDetail.des, HtmlCompat.FROM_HTML_MODE_LEGACY))
+        .setPositiveButton("关闭", null)
+        .show()
     }
-    binding.sectionRv.bindingAdapter.setChecked(position, true)
+
+    binding.videoTab.addOnTabSelectedListener(object : OnTabSelectedListener {
+      @SuppressLint("NotifyDataSetChanged")
+      override fun onTabSelected(tab: TabLayout.Tab) {
+        val currentSource = vodSources[tab.position].name
+        currentSelectedFlag = currentSource
+        val isCurrentSource = currentSource == vodDetail.flag
+        // 选中事件
+        Log.i(TAG, "onTabSelected: ${tab.position}")
+        vodDetail.loadingVideos = true
+        // 加载视频信息
+        scopeNetLife {
+          val result = Get<List<VodVideo>>("${Api.VOD_VIDEO}/${vodDetail.vid}") {
+            addQuery("flag", currentSource)
+          }.await()
+          vodVideos.clear()
+          vodVideos.addAll(result)
+          vodDetail.videoCount = vodVideos.size
+          binding.sectionRv.models = result
+          if (isCurrentSource && vodSources.isNotEmpty()) {
+            val index = vodVideos.indexOfFirst { it.url == vodDetail.videoUrl }
+            if (index != -1) {
+              binding.sectionRv.bindingAdapter.setChecked(index, true)
+            }
+          }
+        }.finally {
+          vodDetail.loadingVideos = false
+        }
+      }
+
+      override fun onTabUnselected(tab: TabLayout.Tab?) {
+      }
+
+      override fun onTabReselected(tab: TabLayout.Tab?) {
+      }
+    })
   }
 
   /**
    * 设置选集列表
    */
   private fun setSelectionsList() {
-    val currentSource = sourceList.find { it.name == vodDetail.flag } ?: VodSource(
-      "默认", 1, listOf(
-        VodVideo(url = vodDetail.videoUrl)
-      )
-    )
-    vodDetail.videoCount = currentSource.videos.size
-    player.setVideoList(currentSource.videos, vodDetail.videoUrl)
-    binding.sectionRv.models = currentSource.videos
-    val selectionPosition = currentSource.videos.indexOfFirst { it.url == vodDetail.videoUrl }
-    setSelectionPosition(selectionPosition)
+    if (vodVideos.isEmpty()) {
+      return
+    }
+    vodDetail.videoCount = vodVideos.size
+    val selectionPosition = if (vodDetail.videoUrl.isNullOrEmpty()) {
+      vodDetail.videoUrl = vodVideos[0].url
+      0
+    } else {
+      vodVideos.indexOfFirst { it.url == vodDetail.videoUrl }
+    }
+    binding.sectionRv.staggered(if (vodVideos.size > 3) 2 else 1, RecyclerView.HORIZONTAL)
+    binding.sectionRv.models = vodVideos
+    player.setVideoList(vodVideos, vodDetail.videoUrl)
+    if (selectionPosition != -1) {
+      onVideoChanged(vodVideos[selectionPosition], selectionPosition)
+    }
   }
 
   /**
@@ -270,7 +335,6 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
    */
   private fun setVideoActions() {
     binding.actionRv.models = listOf(
-      Action("checkout", "换线路", R.drawable.baseline_route_24),
       Action("download", "下载", R.drawable.baseline_arrow_circle_down_24),
       Action("screencast", "投屏", R.drawable.baseline_live_tv_24),
       Action("setting", "设置", R.drawable.baseline_settings_24),
@@ -290,16 +354,46 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
   }
 
   /**
+   * 设置跳过片头和跳过片尾相关信息
+   */
+  private fun setSkipTimes() {
+    player.skipVideoStart = vodDetail.skipStart
+    player.skipVideoEnd = vodDetail.skipEnd
+  }
+
+  private fun setSourcesAndVideos(sourceVideo: VodSourceVideo) {
+    vodSources.addAll(sourceVideo.sources)
+    vodVideos.addAll(sourceVideo.videos)
+    val videoTab = binding.videoTab
+    videoTab.apply {
+      var currentIndex = 0
+      vodSources.forEachIndexed { index, it ->
+        val tab = newTab()
+        tab.text = it.name
+        addTab(tab, vodDetail.flag == it.name)
+        if (it.name == vodDetail.flag) {
+          currentIndex = index
+        }
+      }
+      post {
+        getTabAt(currentIndex)?.select()
+      }
+    }
+  }
+
+  /**
    * 视频播放已准备就绪时
    */
   override fun onVideoPrepared(player: BasePlayer?) {
     Log.d(TAG, "onVideoPrepared: $vodDetail")
-    // 判断是否可以跳过开头页面
-    skipVideoStart()
-    super.onVideoPrepared(player)
+    // 读取已保存的进度信息
+    // 为了保证跳过片头有用，需要写在 super 的前面
     if (vodDetail.currentProgress > 0L) {
+      // 如果有数据，就跳转到指定位置
       player?.seekTo(vodDetail.currentProgress)
     }
+    super.onVideoPrepared(player)
+
     vodDetail.duration = player?.endProgress ?: 0
     scope {
       vodDetail.update()
@@ -346,9 +440,16 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
    * 其他地方回调不直接使用此实现，否则会出现重复调用的情况
    */
   override fun onVideoChanged(vodVideo: VodVideo, position: Int) {
-    Log.d(TAG, "videoChangeListener: $position")
-    // binding.sectionRv.bindingAdapter.setChecked(position, true)
-
+    Log.d(TAG, "onVideoChanged: $position")
+    // 保持同步切换
+    if (currentSelectedFlag == vodVideo.flag) {
+      binding.sectionRv.bindingAdapter.setChecked(position, true)
+    }
+    // 只有切换选集的时候才进行重置进度为0
+    if (vodDetail.videoUrl != vodVideo.url) {
+      player.setProgress(0)
+      vodDetail.currentProgress = 0
+    }
     // 开始播放视频...
     vodDetail.title = vodDetail.name + " " + vodVideo.name
     vodDetail.updatedAt = System.currentTimeMillis()
@@ -361,9 +462,11 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
       stop()
     }
 
-    scope {
+    scopeNetLife {
       val videoUrl = if (!vodVideo.url.endsWith(".m3u8")) {
-        Get<VodParseUrl>(Api.VOD_PARSE + "/${vodVideo.videoId}").await().url.also {
+        Get<VodParseUrl>(Api.VOD_PARSE + "/${vodVideo.videoId}") {
+          addQuery("flag", vodDetail.flag)
+        }.await().url.also {
           vodVideo.url = it
         }
       } else vodVideo.url
@@ -371,12 +474,7 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
       vodDetail.update()
       val proxyUrl = getProxyUrl(videoUrl)
       Log.d(TAG, "proxyUrl: $proxyUrl")
-      val headers = mapOf(
-        "User-Agent" to RequestConfig.USER_AGENT,
-        "Accept" to RequestConfig.ACCEPT,
-        "Accept-Language" to RequestConfig.ACCEPT_LANGUAGE
-      )
-      player.setHeaders(headers).play(proxyUrl)
+      player.setHeaders(RequestConfig.VIDEO_HEADERS).play(proxyUrl)
     }.catch {
       // 这里处理播放错误
       player.playError()
@@ -391,11 +489,7 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
     // 监听播放状态
     player.setPlayerStateListener(this)
     // 监听播放视频改变
-    player.setVideoChangeListener(object : OnVideoChangeListener {
-      override fun onVideoChanged(vodVideo: VodVideo, position: Int) {
-        setSelectionPosition(position)
-      }
-    })
+    player.setVideoChangeListener(this)
     // 监听播放器的下载按钮事件
     player.headerBinding.videoDownload.setOnClickListener {
       showDownloadDialog()
@@ -408,39 +502,20 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
         .setImageUrl(vodDetail.pic)
         .show()
     }
-  }
 
-  /**
-   * 显示切换线路对话框
-   */
-  private fun showCheckoutSourceDialog() {
-    MaterialAlertDialogBuilder(requireContext()).apply {
-      setTitle("选择线路")
-      setSingleChoiceItems(
-        sourceList.map { it.name }.toTypedArray(),
-        sourceList.indexOfFirst { it.name == vodDetail.flag }) { dialog, which ->
-        val source = sourceList[which]
-        if (source.videos.isEmpty()) {
-          player.showToast("当前源下视频为空")
-          return@setSingleChoiceItems
+    player.setVideoSkipChangeListener(object : OnVideoSkipChangeListener {
+      override fun onSkipEndChanged(skipEnd: Int) {
+        if (vodDetail.skipEnd != skipEnd) {
+          vodDetail.skipEnd = skipEnd
         }
-        vodDetail.flag = source.name
-        val videoCount = source.videos.size
-        vodDetail.videoCount = videoCount
-        vodDetail.videoCount = source.videos.size
-        binding.tvSelections.text = "选集(${source.name})"
-        binding.tvAllSelection.text = "${videoCount}集全"
-        var checkedPosition = binding.sectionRv.bindingAdapter.checkedPosition[0]
-        binding.sectionRv.models = source.videos
-        if (checkedPosition > videoCount - 1) {
-          checkedPosition = videoCount - 1
+      }
+
+      override fun onSkipStartChanged(skipStart: Int) {
+        if (vodDetail.skipStart != skipStart) {
+          vodDetail.skipStart = skipStart
         }
-        setSelectionPosition(checkedPosition)
-        player.setVideoList(source.videos, vodDetail.videoUrl)
-        dialog.dismiss()
-        player.showToast("正在切换线路:[${source.name}]")
-      }.show()
-    }
+      }
+    })
   }
 
   /**
@@ -495,12 +570,12 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
           .setTitle("下载")
           .setMessage("是否下载 $name")
           .setPositiveButton("下载") { _, _ ->
-            downloadService.addDownload(vodVideo.url, name, vodDetail.name)
+            downloadService.addDownload(vodVideo.url, name, vodDetail.name, vodDetail.pic)
           }
           .setNegativeButton("取消", null)
           .show()
       }
-    }.models = sourceList.find { it.name == vodDetail.flag }?.videos
+    }.models = vodVideos
   }
 
   /**
@@ -524,24 +599,6 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
       }
       action.notifyChange()
     }
-  }
-
-  private fun skipVideoStart() {
-    // 跳过片头
-    val skipStart = SPConfig.PLAYER_SKIP_START.getRequired(false)
-    if (!skipStart) {
-      return
-    }
-    // player.skipVideoStart = SPConfig.PLAYER_SKIP_START_TIME.getRequired<Long>(0L)
-  }
-
-  private fun skipVideoEnd() {
-    // 跳过片尾
-    val skipEnd = SPConfig.PLAYER_SKIP_END.getRequired(false)
-    if (!skipEnd) {
-      return
-    }
-    // player.skipVideoEnd = SPConfig.PLAYER_SKIP_END_TIME.getRequired<Long>(0L)
   }
 
   override fun onDestroyView() {

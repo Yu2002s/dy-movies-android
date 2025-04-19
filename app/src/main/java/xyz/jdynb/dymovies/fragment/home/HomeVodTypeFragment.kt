@@ -54,10 +54,9 @@ class HomeVodTypeFragment : Fragment() {
     binding.filterRv.setup {
       singleMode = true
       addType<VodType>(R.layout.item_filter)
-      onChecked { position, checked, allChecked ->
+      onChecked { position, checked, _ ->
         val model = getModel<VodType>(position)
         model.isChecked = checked
-        model.notifyChange()
       }
       R.id.chip.onClick {
         val model = getModel<VodType>()

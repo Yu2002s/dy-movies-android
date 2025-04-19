@@ -22,6 +22,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.google.android.material.checkbox.MaterialCheckBox
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                visible="@{m.isVisibleCheck}"
+                android:checked="@{m.isChecked}"
+                android:id="@+id/cb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
             <xyz.jdynb.dymovies.view.RoundImageView
                 tools:src="@tools:sample/avatars"
                 android:id="@+id/vod_img"
@@ -31,7 +41,7 @@
                 android:layout_width="60dp"
                 android:layout_height="90dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/cb"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView

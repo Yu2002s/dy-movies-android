@@ -1,6 +1,7 @@
 package xyz.jdynb.dymovies.fragment.detail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,20 +14,29 @@ import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.setup
 import com.drake.net.Get
+import com.drake.net.Post
 import com.drake.net.utils.scope
 import com.drake.net.utils.scopeDialog
 import kotlinx.coroutines.delay
 import xyz.jdynb.dymovies.R
 import xyz.jdynb.dymovies.config.Api
 import xyz.jdynb.dymovies.databinding.FragmentVodCommentBinding
+import xyz.jdynb.dymovies.dialog.VodCommentDialog
 import xyz.jdynb.dymovies.model.page.Page
 import xyz.jdynb.dymovies.model.vod.VodComment
 import xyz.jdynb.dymovies.model.vod.VodReply
+import xyz.jdynb.dymovies.utils.fitNavigationBar
+import xyz.jdynb.dymovies.utils.showToast
 
 class VodCommentFragment : Fragment() {
 
+  private val TAG = VodCommentFragment::class.java.simpleName
+
   private var _binding: FragmentVodCommentBinding? = null
   private val binding get() = _binding!!
+
+  private lateinit var vodCommentDialog: VodCommentDialog
+  private var detailId = 0
 
   override fun onCreateView(
     inflater: LayoutInflater,
@@ -40,11 +50,9 @@ class VodCommentFragment : Fragment() {
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    ViewCompat.setOnApplyWindowInsetsListener(binding.bottom) {v, insets ->
-      v.updatePadding(bottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom)
-      insets
-    }
+    binding.bottom.fitNavigationBar()
 
+    detailId = requireArguments().getInt("id");
     val id = 1000//requireArguments().getInt("id")
 
     binding.commentRv.dividerSpace(20, DividerOrientation.VERTICAL).setup {
@@ -52,11 +60,15 @@ class VodCommentFragment : Fragment() {
       addType<VodReply>(R.layout.item_list_reply)
 
       R.id.comment_item.onClick {
-
+        val vodComment = getModel<VodComment>()
+        Log.i(TAG, "vodComment: $vodComment")
+        showCommentDialog(vodComment.user.id, vodComment.id)
       }
 
       R.id.reply_item.onClick {
-
+        val vodReply = getModel<VodReply>()
+        Log.i(TAG, "vodReply: $vodReply")
+        showCommentDialog(vodReply.fromUser.id, vodReply.commentId)
       }
     }
 
@@ -71,10 +83,40 @@ class VodCommentFragment : Fragment() {
       }
     }.showLoading()
 
-    binding.submit.setOnClickListener { v ->
-      scopeDialog {
-        delay(2000)
-      }.finally {
+    binding.submit.setOnClickListener { _ ->
+      val content = binding.inputComment.editText!!.text.toString().trim()
+      if (content.isEmpty()) {
+        "请输入评论内容".showToast()
+        return@setOnClickListener
+      }
+      binding.inputComment.editText!!.setText("")
+      submitComment(content)
+    }
+  }
+
+  private fun showCommentDialog(toUid: Int? = null, commentId: Int? = null) {
+    if (!::vodCommentDialog.isInitialized) {
+      vodCommentDialog = VodCommentDialog(requireContext())
+      vodCommentDialog.onSubmit = { content ->
+        submitComment(content, toUid, commentId)
+      }
+    }
+    vodCommentDialog.show()
+  }
+
+  private fun submitComment(content: String, toUid: Int? = null, commentId: Int? = null) {
+    scopeDialog {
+      val result = Post<String>(Api.VOD_COMMENTS) {
+        json(
+          "detailId" to 1000,//detailId,
+          "toUid" to toUid,
+          "commentId" to commentId,
+          "content" to content
+        )
+      }.await()
+      result.showToast()
+      if (commentId == null) {
+        binding.page.refreshing()
       }
     }
   }

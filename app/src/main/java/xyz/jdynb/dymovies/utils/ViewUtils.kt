@@ -1,6 +1,5 @@
 package xyz.jdynb.dymovies.utils
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
@@ -9,6 +8,7 @@ import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.bumptech.glide.Glide
+import java.util.concurrent.TimeUnit
 
 /**
  * RecyclerView 懒加载图片
@@ -33,13 +33,41 @@ fun RecyclerView.lazyLoadImg(): RecyclerView {
 /**
  * 让 View 自适应底部的导航栏
  */
-fun View.fitNavigationBar() {
-  ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
+fun View.fitNavigationBar(target: View? = null, oneSet: Boolean = false) {
+  val targetView = target ?: this
+  ViewCompat.setOnApplyWindowInsetsListener(targetView) { v, insets ->
+    if (oneSet) {
+      ViewCompat.setOnApplyWindowInsetsListener(targetView, null)
+    }
     if (v is ViewGroup) {
       v.clipToPadding = false
     }
     val bottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
     v.updatePadding(bottom = bottom)
     insets
+  }
+}
+
+fun View.throttleClick(
+  interval: Long = 500,
+  unit: TimeUnit = TimeUnit.MILLISECONDS,
+  block: View.() -> Unit
+) {
+  setOnClickListener(ThrottleClickListener(interval, unit, block))
+}
+
+class ThrottleClickListener(
+  private val interval: Long = 500,
+  private val unit: TimeUnit = TimeUnit.MILLISECONDS,
+  private var block: View.() -> Unit
+) : View.OnClickListener {
+  private var lastTime: Long = 0
+
+  override fun onClick(v: View) {
+    val currentTime = System.currentTimeMillis()
+    if (currentTime - lastTime > unit.toMillis(interval)) {
+      lastTime = currentTime
+      block(v)
+    }
   }
 }

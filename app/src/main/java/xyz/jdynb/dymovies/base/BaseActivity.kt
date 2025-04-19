@@ -11,9 +11,15 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * Activity 基类
+ */
 open class BaseActivity : AppCompatActivity() {
 
   companion object {
+    /**
+     * 是否是小白条导航栏
+     */
     private var isSmallNavigationBar = true
   }
 
@@ -23,9 +29,11 @@ open class BaseActivity : AppCompatActivity() {
   }
 
   private fun initWindow() {
+    // 如果是小白条导航栏，就直接使用沉浸式
     if (isSmallNavigationBar) {
       WindowCompat.setDecorFitsSystemWindows(window, false)
     } else {
+      // 如果不是小白条，开启自适应导航
       enableEdgeToEdge()
     }
     ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { v, insets ->
@@ -56,7 +64,7 @@ open class BaseActivity : AppCompatActivity() {
   }
 
   /**
-   * @return 返回true将自动对recyclerview进行底栏处理
+   * @return 返回true将自动对 recyclerview 进行底栏处理
    */
   protected open fun onInsetChanged(statusBarHeight: Int, navigationBarHeight: Int): Boolean {
     return false
@@ -80,10 +88,6 @@ open class BaseActivity : AppCompatActivity() {
       }
     }
     return null
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
   }
 
 }

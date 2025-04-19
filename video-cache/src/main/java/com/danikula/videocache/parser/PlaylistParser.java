@@ -4,15 +4,19 @@ import java.io.File;
 import java.net.URI;
 import java.nio.channels.Channels;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.danikula.videocache.parser.M3uConstants.*;
+
+import android.util.Log;
 
 
 /**
@@ -61,6 +65,27 @@ public final class PlaylistParser {
 
         EncryptionInfo currentEncryption = null;
 
+        /*
+
+            澳门新葡京规则
+
+            #EXT-X-DISCONTINUITY
+            #EXTINF:6.666667,
+            d7efc7f70110934667.ts
+            #EXTINF:3.333333,
+            d7efc7f70110934668.ts
+            #EXTINF:3.333333,
+            d7efc7f70110934669.ts
+            #EXTINF:3.333333,
+            d7efc7f70110934670.ts
+            #EXTINF:2.966667,
+            d7efc7f70110934671.ts
+            #EXT-X-DISCONTINUITY
+
+         */
+
+        boolean isAd = false;
+
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine().trim();
 
@@ -71,6 +96,11 @@ public final class PlaylistParser {
                         firstLine = false;
                     } else if (line.startsWith(EXTINF)) {
                         parseExtInf(line, lineNumber, builder);
+                        double duration = builder.getDuration();
+                        // 暂时：过滤澳门新葡京的 flag: lzm3u8，后续可能要调整
+                        if (builder.isDiscontinuity() && duration == 6.666667) {
+                            isAd = true;
+                        }
                     } else if (line.startsWith(EXT_X_ENDLIST)) {
                         endListSet = true;
                     } else if (line.startsWith(EXT_X_TARGET_DURATION)) {
@@ -85,6 +115,9 @@ public final class PlaylistParser {
                         mediaSequenceNumber = parseMediaSequence(line, lineNumber);
                     } else if (line.startsWith(EXT_X_DISCONTINUITY)) {
                     	builder.discontinuity(true);
+                        if (isAd) {
+                            isAd  = false;
+                        }
                     } else if (line.startsWith(EXT_X_PROGRAM_DATE_TIME)) {
                         long programDateTime = parseProgramDateTime(line, lineNumber);
                         builder.programDate(programDateTime);
@@ -112,7 +145,11 @@ public final class PlaylistParser {
                     builder.encrypted(currentEncryption);
 
                     builder.uri(toURI(line));
-                    elements.add(builder.create());
+
+                    // 过滤澳门新葡京广告
+                    if (!isAd) {
+                        elements.add(builder.create());
+                    }
 
                     // a new element begins.
                     builder.reset();
@@ -121,6 +158,14 @@ public final class PlaylistParser {
 
             lineNumber++;
         }
+
+        /*String[] lines = new String[elements.size()];
+
+        for (int i = 0; i < elements.size(); i++) {
+            lines[i] = elements.get(i).getURI().toString();
+        }
+
+        Log.d("jdy", "lines: " + Arrays.toString(lines));*/
 
         return new Playlist(Collections.unmodifiableList(elements), endListSet, targetDuration, mediaSequenceNumber);
     }

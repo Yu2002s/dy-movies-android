@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activity.VodHistoryActivity">
+
+    <item
+        android:id="@+id/edit"
+        android:icon="@drawable/baseline_mode_edit_24"
+        android:title="@string/manage"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/delete"
+        android:icon="@drawable/baseline_delete_outline_24"
+        android:title="@string/delete"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/check_all"
+        android:checkable="true"
+        android:icon="@drawable/baseline_select_all_24"
+        android:title="@string/select_all" />
+
+    <item
+        android:id="@+id/reverse_check"
+        android:icon="@drawable/baseline_deselect_24"
+        android:title="@string/unselect_all" />
+
+</menu>

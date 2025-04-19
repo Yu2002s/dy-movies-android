@@ -4,13 +4,14 @@ import android.annotation.SuppressLint
 import android.os.Environment
 import android.text.TextUtils
 import android.util.Log
+import com.danikula.videocache.parser.M3uConstants
+import com.danikula.videocache.parser.ParseException
 import org.litepal.LitePal
 import org.litepal.extension.findFirst
 import xyz.jdynb.dymovies.DyMoviesApplication
 import xyz.jdynb.dymovies.model.download.Download
 import xyz.jdynb.dymovies.utils.isUrl
 import java.io.BufferedInputStream
-import java.io.BufferedOutputStream
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
@@ -285,6 +286,7 @@ class M3U8Downloader(
                     } else {
                         download.progress = (downloadBytes * 100 / fileLength).toInt()
                     }
+                    download.update()
                 }
             }
         }
@@ -301,6 +303,7 @@ class M3U8Downloader(
                 throw Exception("下载失败")
             }
             download.progress = 100
+            download.update()
             // finishedCount 不为0则代表成功
             if (isM3U8File) {
                 download.merge()
@@ -712,9 +715,12 @@ class M3U8Downloader(
                         }
                         content.append("\n")
                     }
-                    while ((bufferedReader.readLine().also { line = it }) != null) content.append(
-                        line
-                    ).append("\n")
+                    // TODO: 下载视频去除广告待实现
+                    while ((bufferedReader.readLine().also { line = it }) != null) {
+                        content.append(
+                            line
+                        ).append("\n")
+                    }
                     bufferedReader.close()
                     inputStream.close()
                     // Log.i(TAG, content.toString())

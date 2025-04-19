@@ -4,7 +4,7 @@ import org.litepal.annotation.Column
 import org.litepal.crud.LitePalSupport
 
 /**
- * 视频代理
+ * 视频代理 （一些视频是多码率的，所以需要配置映射到实际的播放地址，提高加载效率）
  */
 data class VideoProxy(
   /**

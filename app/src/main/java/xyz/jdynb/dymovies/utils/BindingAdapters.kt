@@ -5,9 +5,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
+import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
+import androidx.databinding.ObservableBoolean
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import xyz.jdynb.dymovies.R
+import xyz.jdynb.dymovies.model.download.Download
 import xyz.jdynb.dymovies.utils.cache.ColorDrawableCache
 import xyz.jdynb.dymovies.view.RoundImageView
 
@@ -32,15 +36,17 @@ object BindingAdapters {
   @JvmStatic
   @BindingAdapter("imageUrl")
   fun loadImage(view: RoundImageView, url: String?) {
+    val randomColor = ColorUtils.generateRandomVibrantColor()
+    val colorDrawable = ColorDrawableCache.getColorDrawable(randomColor)
     if (!url.isNullOrEmpty()) {
-      val randomColor = ColorUtils.generateRandomVibrantColor()
-      val colorDrawable = ColorDrawableCache.getColorDrawable(randomColor)
       Glide.with(view.context)
         .load(url)
         .centerCrop()
         .placeholder(colorDrawable)
         .transition(fadeTransition)
         .into(view)
+    } else {
+      view.setImageDrawable(colorDrawable)
     }
   }
 
@@ -89,5 +95,28 @@ object BindingAdapters {
   @BindingAdapter("isSelected")
   fun setChecked(view: View, isSelected: Boolean) {
     view.isSelected = isSelected
+  }
+
+  @JvmStatic
+  @BindingAdapter("visible")
+  fun setVisible(view: View, isVisible: Boolean) {
+    view.isVisible = isVisible
+  }
+
+  @JvmStatic
+  @BindingAdapter("videoSrc")
+  fun setVideoSource(view: ImageView, download: Download) {
+    if (!download.isCompleted) {
+      view.setImageResource(R.drawable.baseline_download_for_offline_24)
+      return
+    }
+    val randomColor = ColorUtils.generateRandomVibrantColor()
+    val colorDrawable = ColorDrawableCache.getColorDrawable(randomColor)
+    Glide.with(view)
+      .load(download.downloadPath)
+      .centerCrop()
+      .placeholder(colorDrawable)
+      .transition(fadeTransition)
+      .into(view)
   }
 }

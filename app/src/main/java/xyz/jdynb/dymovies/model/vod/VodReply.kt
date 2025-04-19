@@ -1,6 +1,7 @@
 package xyz.jdynb.dymovies.model.vod
 
 import androidx.annotation.Keep
+import androidx.databinding.BaseObservable
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import xyz.jdynb.dymovies.model.user.User
@@ -10,6 +11,8 @@ import xyz.jdynb.dymovies.model.user.User
 data class VodReply(
   @SerialName("id")
   var id: Int = 0,
+  @SerialName("commentId")
+  var commentId: Int = 0,
   @SerialName("fromUser")
   var fromUser: User = User(),
   @SerialName("toUser")

@@ -61,6 +61,7 @@ import master.flame.danmaku.danmaku.parser.IDataSource;
 import master.flame.danmaku.danmaku.util.IOUtils;
 import master.flame.danmaku.ui.widget.DanmakuTouchHelper;
 import master.flame.danmaku.ui.widget.DanmakuView;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import xyz.jdynb.dymovies.R;
 import xyz.jdynb.dymovies.config.SPConfig;
 import xyz.jdynb.dymovies.databinding.DialogPlaySettingBinding;
@@ -75,6 +76,7 @@ import xyz.jdynb.dymovies.databinding.LayoutVideoErrorBinding;
 import xyz.jdynb.dymovies.dialog.AdaptiveDialog;
 import xyz.jdynb.dymovies.dialog.SelectionDialog;
 import xyz.jdynb.dymovies.event.OnVideoChangeListener;
+import xyz.jdynb.dymovies.event.OnVideoSkipChangeListener;
 import xyz.jdynb.dymovies.model.vod.VodVideo;
 import xyz.jdynb.dymovies.utils.DisplayUtilsKt;
 import xyz.jdynb.dymovies.utils.SpUtils;
@@ -84,6 +86,9 @@ import xyz.jdynb.dymovies.utils.player.MyAcFunDanmakuLoader;
 import xyz.jdynb.dymovies.view.player.base.BasePlayer;
 import xyz.jdynb.dymovies.view.player.base.PlayerStateListener;
 
+/**
+ * 冬雨播放器
+ */
 public class DongYuPlayer extends BasePlayer {
 
     private static final String TAG = DongYuPlayer.class.getSimpleName();
@@ -131,6 +136,11 @@ public class DongYuPlayer extends BasePlayer {
      */
     private OnVideoChangeListener videoChangeListener;
 
+    /**
+     * 监听视频跳过片头片尾信息改变事件
+     */
+    private OnVideoSkipChangeListener videoSkipChangeListener;
+
     private DanmakuView mDanmakuView;
 
     private DanmakuContext mDanmakuContext;
@@ -165,12 +175,16 @@ public class DongYuPlayer extends BasePlayer {
     /**
      * 跳过视频开头位置
      */
-    private long skipVideoStart = 0;
+    private int skipVideoStart = 0;
 
     /**
      * 跳过视频结束位置
      */
-    private long skipVideoEnd = 0;
+    private int skipVideoEnd = 0;
+
+    private boolean isEnableSkipVideoStart = false;
+
+    private boolean isEnableSkipVideoEnd = false;
 
     private AdaptiveDialog settingDialog;
 
@@ -180,6 +194,10 @@ public class DongYuPlayer extends BasePlayer {
 
     public void setVideoChangeListener(OnVideoChangeListener videoChangeListener) {
         this.videoChangeListener = videoChangeListener;
+    }
+
+    public void setVideoSkipChangeListener(OnVideoSkipChangeListener videoSkipChangeListener) {
+        this.videoSkipChangeListener = videoSkipChangeListener;
     }
 
     public DongYuPlayer(@NonNull Context context) {
@@ -194,6 +212,7 @@ public class DongYuPlayer extends BasePlayer {
         DEFAULT_PADDING_HORIZONTAL = DisplayUtilsKt.dp2px(10, getContext());
         FULLSCREEN_PADDING_HORIZONTAL = FULLSCREEN_PADDING_BOTTOM;
 
+        init();
         initLayout();
         initViewEvent();
 
@@ -236,6 +255,10 @@ public class DongYuPlayer extends BasePlayer {
         bottom.setPadding(paddingHorizontal, 0, paddingHorizontal, paddingBottom);
         FrameLayout middle = middleBinding.getRoot();
         middle.setPadding(paddingHorizontal, 0, paddingHorizontal, 0);
+    }
+
+    private void init() {
+
     }
 
     private void initLayout() {
@@ -560,8 +583,8 @@ public class DongYuPlayer extends BasePlayer {
                 errorBinding = LayoutVideoErrorBinding
                         .inflate(LayoutInflater.from(getContext()), maskLayout, false);
                 errorBinding.btnRefresh.setOnClickListener(v -> {
-                    refresh();
                     hideMaskView();
+                    refresh();
                 });
             }
             return errorBinding.getRoot();
@@ -758,6 +781,7 @@ public class DongYuPlayer extends BasePlayer {
                     return;
                 }
                 position++;
+                // 重置进度
                 videoChangeListener.onVideoChanged(videoList.get(position), position);
             }
         });
@@ -853,7 +877,7 @@ public class DongYuPlayer extends BasePlayer {
     }
 
     private void startBroadcastReceiver() {
-        if (broadcastReceiver != null) {
+        if (broadcastReceiver != null || !isFullScreen()) {
             return;
         }
 
@@ -1026,9 +1050,12 @@ public class DongYuPlayer extends BasePlayer {
             playerStateListener.onProgressChanged(currentProgress);
         }
 
+        boolean isEnableSkipVideoEnd = SpUtils.INSTANCE
+                .getOrDefault(SpUtils.DEFAULT_KEY, SPConfig.PLAYER_SKIP_END, false).booleanValue();
+
         long endProgress = getEndProgress();
         // 跳过片尾
-        if (endProgress > 0 && skipVideoEnd > 0 && endProgress - skipVideoEnd == 0) {
+        if (isEnableSkipVideoEnd && endProgress > 0 && skipVideoEnd > 0 && endProgress - skipVideoEnd == 0) {
             playNext();
         }
     }
@@ -1048,8 +1075,12 @@ public class DongYuPlayer extends BasePlayer {
             playerStateListener.onVideoPrepared(this);
         }
 
-        // 跳过开头
-        if (skipVideoStart > 0) {
+        // 是否能跳过片头
+        boolean isEnableSkipVideoStart = SpUtils.INSTANCE
+                .getOrDefault(SpUtils.DEFAULT_KEY, SPConfig.PLAYER_SKIP_START, false).booleanValue();
+
+        // 跳过开头，需要满足条件：已开启跳过片头、已设置跳过片头位置、当前进度为0时
+        if (isEnableSkipVideoStart && skipVideoStart > 0 && getCurrentProgress() == 0) {
             seekTo(skipVideoStart);
         }
     }
@@ -1147,9 +1178,12 @@ public class DongYuPlayer extends BasePlayer {
         float longPressSpeed = Float.parseFloat(Objects.requireNonNull(SpUtils.INSTANCE
                 .getOrDefault(SpUtils.DEFAULT_KEY, SPConfig.PLAYER_LONG_PRESS_SPEED, DEFAULT_LONG_PRESS_SPEED)));
         setSpeed(longPressSpeed);
-        float speed = getIjkMediaPlayer().getSpeed(1f);
+        IjkMediaPlayer ijkMediaPlayer = getIjkMediaPlayer();
+        if (ijkMediaPlayer == null) {
+            return;
+        }
+        float speed = ijkMediaPlayer.getSpeed(1f);
         showMessage(R.drawable.baseline_fast_forward_24, speed + "倍速播放中");
-        // mDanmakuContext.setScrollSpeedFactor(speed);
         if (mDanmakuView.isPrepared()) {
             mDanmakuView.pause();
         }
@@ -1224,6 +1258,7 @@ public class DongYuPlayer extends BasePlayer {
             showMaskView();
             return false;
         }
+        startBroadcastReceiver();
         return super.play(url);
     }
 
@@ -1289,19 +1324,41 @@ public class DongYuPlayer extends BasePlayer {
         bottomBinding.playNext.callOnClick();
     }
 
-    public void setSkipVideoStart(long skipVideoStart) {
+    public void setSkipVideoStart(int skipVideoStart) {
         this.skipVideoStart = skipVideoStart;
+        if (videoSkipChangeListener != null) {
+            videoSkipChangeListener.onSkipStartChanged(skipVideoStart);
+        }
     }
 
-    public long getSkipVideoStart() {
+    public int getSkipVideoStart() {
         return skipVideoStart;
     }
 
-    public void setSkipVideoEnd(long skipVideoEnd) {
+    public void setSkipVideoEnd(int skipVideoEnd) {
         this.skipVideoEnd = skipVideoEnd;
+        if (videoSkipChangeListener != null) {
+            videoSkipChangeListener.onSkipEndChanged(skipVideoEnd);
+        }
     }
 
-    public long getSkipVideoEnd() {
+    public int getSkipVideoEnd() {
         return skipVideoEnd;
+    }
+
+    public boolean isEnableSkipVideoEnd() {
+        return isEnableSkipVideoEnd;
+    }
+
+    public boolean isEnableSkipVideoStart() {
+        return isEnableSkipVideoStart;
+    }
+
+    public void setEnableSkipVideoEnd(boolean enableSkipVideoEnd) {
+        isEnableSkipVideoEnd = enableSkipVideoEnd;
+    }
+
+    public void setEnableSkipVideoStart(boolean enableSkipVideoStart) {
+        isEnableSkipVideoStart = enableSkipVideoStart;
     }
 }

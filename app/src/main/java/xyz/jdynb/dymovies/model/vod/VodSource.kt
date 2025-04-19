@@ -4,6 +4,9 @@ import androidx.annotation.Keep
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * 影片来源
+ */
 @Serializable
 @Keep
 data class VodSource(

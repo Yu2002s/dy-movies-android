@@ -158,6 +158,7 @@ public class M3U8ProxyCache extends HttpProxyCache {
             } else {
                 url = baseUrl + name;
             }
+            // Log.d("jdy", "downloadUrl: " + url);
             name = getTsRelativeName(pos,  name);
 
             File file = new File(baseCachePath + File.separator + name);

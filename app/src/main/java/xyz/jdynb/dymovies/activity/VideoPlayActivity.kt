@@ -39,6 +39,11 @@ class VideoPlayActivity : AppCompatActivity(), ServiceConnection {
 
   val player get() = binding.player
 
+  /**
+   * 影片详情的具体类型
+   */
+  var vodTypeId = 0
+
   private var _downloadService: DownloadService? = null
   val downloadService get() = _downloadService!!
 
@@ -65,6 +70,7 @@ class VideoPlayActivity : AppCompatActivity(), ServiceConnection {
 
     val vp = binding.detailVp
     val tab = binding.detailTab
+    vp.isUserInputEnabled = false
     vp.adapter = object : FragmentStateAdapter(supportFragmentManager, lifecycle) {
       override fun getItemCount() = 3
       override fun createFragment(position: Int): Fragment {

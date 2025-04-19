@@ -10,29 +10,35 @@ import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.divider
 import com.drake.brv.utils.grid
 import com.drake.brv.utils.setup
+import com.google.android.material.color.DynamicColors
+import com.google.android.material.color.utilities.DynamicScheme
 import xyz.jdynb.dymovies.R
 import xyz.jdynb.dymovies.event.OnVideoChangeListener
 import xyz.jdynb.dymovies.model.vod.VodVideo
+import xyz.jdynb.dymovies.utils.fitNavigationBar
 
+/**
+ * 视频选集对话框
+ */
 class SelectionDialog(
   context: Context,
+  // 当前视频列表
   private val videoList: List<VodVideo>,
-  private val currentVideo: String
+  // 当前播放的视频地址
+  private val currentVideo: String? = null
 ) :
   AdaptiveDialog(context) {
 
+  /**
+   * 监听选择视频改变时触发
+   */
   var videoChangeListener: OnVideoChangeListener? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     val recyclerView = RecyclerView(context)
     setContentView(recyclerView)
-
-    ViewCompat.setOnApplyWindowInsetsListener(window!!.decorView) { _, insets ->
-      recyclerView.clipToPadding = false
-      recyclerView.updatePadding(bottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom)
-      insets
-    }
+    recyclerView.fitNavigationBar(window!!.decorView)
 
     val bindingAdapter = recyclerView
       .grid(3)
@@ -48,17 +54,19 @@ class SelectionDialog(
           val model = getModel<VodVideo>(position)
           model.isChecked = checked
           model.notifyChange()
-          if (checked) {
-            videoChangeListener?.onVideoChanged(model, position)
-          }
         }
         R.id.item.onFastClick {
           val model = getModel<VodVideo>()
           if (model.isChecked) return@onFastClick
           setChecked(layoutPosition, !model.isChecked)
+          videoChangeListener?.onVideoChanged(model, layoutPosition)
         }
       }
     bindingAdapter.models = videoList
+    if (currentVideo.isNullOrEmpty()) {
+      return
+    }
+    // 获取当前视频的位置
     val position = videoList.indexOfFirst { it.url == currentVideo }
     if (position < 0) {
       return

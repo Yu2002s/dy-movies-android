@@ -66,6 +66,8 @@
 
         <activity android:name=".activity.CrashActivity" />
 
+        <activity android:name=".activity.VodLatestActivity" android:label="@string/vod_latest" />
+
     </application>
 
 </manifest>

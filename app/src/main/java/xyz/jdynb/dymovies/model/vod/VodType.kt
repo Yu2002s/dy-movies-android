@@ -5,6 +5,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import androidx.annotation.Keep
 import androidx.databinding.BaseObservable
+import androidx.databinding.Bindable
+import com.drake.brv.BR
 
 @Keep
 @Serializable
@@ -21,6 +23,11 @@ data class VodType(
     var children: List<VodType> = emptyList()
 ): BaseObservable() {
 
+    @get:Bindable
     var isChecked = false
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.checked)
+        }
 
 }

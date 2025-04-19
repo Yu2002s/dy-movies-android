@@ -21,7 +21,9 @@ import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 
-
+/**
+ * 视频下载服务
+ */
 class DownloadService : Service() {
 
     companion object {
@@ -237,14 +239,14 @@ class DownloadService : Service() {
      * @param name 下载显示的名称
      * @param groupName 下载后放入此文件夹
      */
-    fun addDownload(url: String, name: String = "", groupName: String = "") {
+    fun addDownload(url: String, name: String = "", groupName: String = "", cover: String = "") {
         if (_downloadList.size > 4) {
             "为了更好的体验，同时只能下载4个任务(包括已暂停任务)".showToast()
             return
         }
 
         // 开始下载
-        val download = Download(url = url, name = name, groupName = groupName)
+        val download = Download(url = url, name = name, groupName = groupName, cover = cover)
 
         if (isContainsDownload(download)) {
             Log.w(TAG, "下载队列中已存在: $url")

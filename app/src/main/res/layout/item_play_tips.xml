@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 
-    <data>
-
-        <variable
-            name="m"
-            type="String" />
-
-    </data>
-
     <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
         app:contentPadding="10dp">
 
         <TextView
-            android:text="@{m}"
+            android:text="首次加载或拖动进度可能加载较慢，请耐心等待，如多次卡顿可尝试[切换线路]或重新打开播放页面。高峰期卡顿建议下载后再观看"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawablePadding="10dp"

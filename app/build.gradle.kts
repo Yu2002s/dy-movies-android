@@ -13,15 +13,15 @@ android {
     applicationId = "xyz.jdynb.dymovies"
     minSdk = 24
     targetSdk = 34
-    versionCode = 2
-    versionName = "1.0"
+    versionCode = 6
+    versionName = "1.0.4-release"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     signingConfig = signingConfigs.getByName("debug")
 
     ndk {
       abiFilters.add("arm64-v8a")
-      abiFilters.add("x86_64")
+      // abiFilters.add("x86_64")
     }
   }
 
@@ -81,7 +81,6 @@ dependencies {
   implementation(libs.net)
   implementation(libs.kotlin.serialization.json)
   implementation(libs.glide)
-  implementation(libs.banner)
   implementation(libs.litepal)
   implementation(libs.uaoan.dlna)
   implementation(libs.preference)

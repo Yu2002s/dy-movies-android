@@ -36,12 +36,21 @@
             android:layout_gravity="center"/>
 
         <TextView
-            android:textSize="11sp"
+            android:textSize="10sp"
             android:id="@+id/loading_tip"
-            android:text="首次加载可能较慢,多次卡顿可尝试切换线路"
+            android:gravity="center_horizontal"
+            android:text="首次播放或拖动进度可能加载较慢,长时间卡顿可退出重新进入\n高峰期:也可下载后再进行播放"
             android:textColor="#dedede"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            tools:ignore="SmallSp" />
+
+        <!--<Button
+            android:translationZ="99dp"
+            android:id="@+id/btn_refresh"
+            android:text="刷新"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>-->
 
     </LinearLayout>
 

@@ -1,6 +1,7 @@
 package xyz.jdynb.dymovies.utils;
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
@@ -12,6 +13,30 @@ import xyz.jdynb.dymovies.DyMoviesApplication
  */
 fun Int.dp2px(context: Context = DyMoviesApplication.context): Int {
     return (context.resources.displayMetrics.density * this + 0.5).toInt()
+}
+
+@JvmName("getWindowWidthWithCtx")
+fun Context.getWindowWidth(): Int {
+    if (this is Activity) {
+        return getWindowWidth()
+    }
+    return getWindowWidth(this)
+}
+
+fun Dialog.getWindowWidth(): Int {
+    val wm = this.window!!.windowManager
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        return wm.currentWindowMetrics.bounds.width()
+    }
+    return wm.defaultDisplay.width
+}
+
+fun Dialog.getWindowHeight(): Int {
+    val wm = this.window!!.windowManager
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        return wm.currentWindowMetrics.bounds.height()
+    }
+    return wm.defaultDisplay.height
 }
 
 fun Activity.getWindowWidth(): Int {
@@ -30,8 +55,10 @@ fun Activity.getWindowHeight(): Int {
     }
 }
 
-fun getWindowWidth(): Int {
-    val context = DyMoviesApplication.context
+fun getWindowWidth() = getWindowWidth(null)
+
+fun getWindowWidth(ctx: Context? = null): Int {
+    val context = ctx ?: DyMoviesApplication.context
     val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
         windowManager.currentWindowMetrics.bounds.width()

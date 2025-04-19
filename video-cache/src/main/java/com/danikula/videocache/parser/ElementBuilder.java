@@ -50,8 +50,16 @@ class ElementBuilder {
     	return this;
     }
 
+    public boolean isDiscontinuity() {
+        return discontinuity;
+    }
+
     public URI getUri() {
         return uri;
+    }
+
+    public PlaylistInfo getPlaylistInfo() {
+        return playlistInfo;
     }
 
     public ElementBuilder uri(URI uri) {
@@ -100,4 +108,16 @@ class ElementBuilder {
         return new ElementImpl(playlistInfo, encryptionInfo, duration, uri, title, programDate,discontinuity);
     }
 
+    @Override
+    public String toString() {
+        return "ElementBuilder{" +
+                "duration=" + duration +
+                ", uri=" + uri +
+                ", playlistInfo=" + playlistInfo +
+                ", encryptionInfo=" + encryptionInfo +
+                ", title='" + title + '\'' +
+                ", programDate=" + programDate +
+                ", discontinuity=" + discontinuity +
+                '}';
+    }
 }

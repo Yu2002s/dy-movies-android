@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <PreferenceCategory
         app:iconSpaceReserved="false"
         app:title="用户信息">
@@ -10,5 +11,52 @@
         <Preference
             app:icon="@drawable/baseline_close_24"
             app:key="login" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="储存相关">
+        <Preference
+            app:icon="@drawable/baseline_clear_all_24"
+            app:iconSpaceReserved="false"
+            app:key="clear_cache"
+            app:summary="清理播放和下载时的缓存文件，释放储存空间"
+            app:title="清理缓存" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="关于">
+
+        <Preference
+            app:icon="@drawable/baseline_warning_24"
+            app:iconSpaceReserved="false"
+            app:key="usage_dep"
+            app:summary="App使用的第三方依赖清单"
+            app:title="第三方依赖库" />
+        <Preference
+            app:icon="@drawable/baseline_gavel_24"
+            app:iconSpaceReserved="false"
+            app:key="statement"
+            app:title="免责声明" />
+        <Preference
+            app:icon="@drawable/baseline_logo_dev_24"
+            app:iconSpaceReserved="false"
+            app:key="dev"
+            app:summary="\@冬日暖雨"
+            app:title="作者" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="其它App">
+
+        <Preference
+            app:key="splitlanzou"
+            app:summary="第三方蓝奏网盘，支持上传100M+"
+            app:iconSpaceReserved="false"
+            app:title="SplitLanzou" />
+
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

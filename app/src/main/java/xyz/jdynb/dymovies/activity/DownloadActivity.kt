@@ -9,13 +9,22 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.IBinder
 import android.provider.Settings
+import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
+import com.drake.brv.BindingAdapter
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
+import com.drake.net.utils.scope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -29,10 +38,12 @@ import xyz.jdynb.dymovies.download.DownloadListener
 import xyz.jdynb.dymovies.download.DownloadService
 import xyz.jdynb.dymovies.model.download.Download
 import xyz.jdynb.dymovies.model.download.DownloadStatus
+import xyz.jdynb.dymovies.model.vod.VodDetail
 import xyz.jdynb.dymovies.utils.formatBytes
 import xyz.jdynb.dymovies.utils.showToast
+import java.util.Objects
 
-class DownloadActivity : BaseActivity(), ServiceConnection, DownloadListener {
+class DownloadActivity : BaseActivity(), ServiceConnection, DownloadListener, MenuProvider {
 
   companion object {
 
@@ -53,57 +64,52 @@ class DownloadActivity : BaseActivity(), ServiceConnection, DownloadListener {
     setContentView(binding.root)
     setSupportActionBar(binding.toolbar)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    addMenuProvider(this, this)
 
     binding.rv.setup {
       addType<Download>(R.layout.item_list_download)
-      onCreate {
-        getBinding<ItemListDownloadBinding>().sw.setOnClickListener {
-          downloadService.resumeOrPauseDownload(getModel())
-        }
-      }
-      onBind {
-        val model = getModel<Download>()
-        getBinding<ItemListDownloadBinding>().apply {
-          name.text = model.name
-          status.text =
-            model.statusStr + " " + formatBytes(model.currentByte) + " " + model.progress + "%"
-          sw.setImageResource(
-            if (model.status == DownloadStatus.DOWNLOADING)
-              R.drawable.baseline_pause_circle_outline_24
-            else R.drawable.baseline_arrow_circle_down_24
-          )
-          sw.isVisible = model.status != DownloadStatus.COMPLETED
-          if (model.progress == 0 && model.isDownloading) {
-            progressBar.isIndeterminate = true
-          } else {
-            progressBar.isIndeterminate = false
-            progressBar.setProgressCompat(model.progress, true)
-          }
-          progressBar.isVisible = model.status != DownloadStatus.COMPLETED
-        }
+      R.id.sw.onClick {
+        val download = getModel<Download>()
+        downloadService.resumeOrPauseDownload(download)
       }
 
-      R.id.item.onClick {
+      onFastClick(R.id.item, R.id.cb) {
         val model = getModel<Download>()
-        if (model.status != DownloadStatus.COMPLETED) {
-          downloadService.resumeOrPauseDownload(model)
-          return@onClick
+        if (!toggleMode && it == R.id.item) {
+          if (model.status != DownloadStatus.COMPLETED) {
+            downloadService.resumeOrPauseDownload(model)
+            return@onFastClick
+          }
+          // 打开播放
+          SimpleVideoActivity.actionStart(model.downloadPath, model.name)
+          return@onFastClick
         }
-        // 打开播放
-        SimpleVideoActivity.actionStart(model.downloadPath, model.name)
-        // VideoActivity.play(VideoType.NORMAL, model.downloadPath, model.name)
+        val checked = model.isChecked
+        setChecked(layoutPosition, !checked)
       }
 
       R.id.item.onLongClick {
-        val model = getModel<Download>()
-        downloadService.removeDownload(model)
-        mutable.removeAt(modelPosition)
-        notifyItemRemoved(modelPosition)
+        if (!toggleMode) {
+          toggle()
+          setChecked(layoutPosition, true)
+        }
+      }
+
+      onChecked { position, checked, _ ->
+        val model = getModel<Download>(position)
+        model.isChecked = checked
+      }
+
+      onToggle { position, toggleMode, _ ->
+        // 刷新列表显示选择按钮
+        val model = getModel<Download>(position)
+        model.isVisibleCheck = toggleMode
+        changeListEditable(this)
       }
     }
 
     binding.rvl.onRefresh {
-      lifecycleScope.launch {
+      scope {
         val offset = (index - 1) * 10
         val downloads = withContext(Dispatchers.IO) {
           LitePal.offset(offset).limit(10).order("updateAt desc").find<Download>()
@@ -115,32 +121,65 @@ class DownloadActivity : BaseActivity(), ServiceConnection, DownloadListener {
       }
     }
 
-    // android 11以上
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-      if (!Environment.isExternalStorageManager()) {
-        "请授权访问存储空间以下载文件".showToast()
-        startActivity(
-          Intent(
-            Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
-            "package:$packageName".toUri()
-          )
-        )
-      }
-    }
+    checkPermission()
   }
 
-  override fun onDownload(download: Download) {
-    if (binding.rv.models == null) {
-      return
+  private fun checkAll(isChecked: Boolean) {
+    val bindingAdapter = binding.rv.bindingAdapter
+    if (!bindingAdapter.toggleMode) {
+      bindingAdapter.toggle()
     }
-    val model = binding.rv.models!!.indexOf(download)
+    bindingAdapter.checkedAll(isChecked)
+  }
+
+  private fun reverseCheck() {
+    binding.rv.bindingAdapter.checkedReverse()
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  private fun delete() {
+    val bindingAdapter = binding.rv.bindingAdapter
+    val checkedItems = bindingAdapter.checkedPosition
+    Log.d(TAG, "checkedItems: $checkedItems")
+    checkedItems.sortedDescending().forEach { index ->
+      val download = (bindingAdapter.models as List<Download>)[index]
+      // 暂时在主线程删除
+      downloadService.removeDownload(download)
+      bindingAdapter.mutable.removeAt(index)
+      bindingAdapter.notifyItemRemoved(index)
+    }
+    if (bindingAdapter.models.isNullOrEmpty()) {
+      invalidateMenu()
+    }
+    toggle(false)
+  }
+
+  private fun toggle(toggleMode: Boolean = !binding.rv.bindingAdapter.toggleMode) {
+    binding.rv.bindingAdapter.toggle(toggleMode)
+  }
+
+  /** 改变编辑状态 */
+  private fun changeListEditable(adapter: BindingAdapter) {
+    val toggleMode = adapter.toggleMode
+    // val checkedCount = adapter.checkedCount
+    invalidateMenu()
+
+    // 如果取消管理模式则取消全部已选择
+    if (!toggleMode) adapter.checkedAll(false)
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  override fun onDownload(download: Download) {
+    val models = binding.rv.models ?: return
+    models as List<Download>
+    val index = models.indexOf(download)
     runOnUiThread {
-      if (model == -1) {
-        // binding.rv.mutable.add(0, download)
-        // binding.rv.adapter?.notifyItemInserted(0)
-      } else {
-        binding.rv.mutable[model] = download
-        binding.rv.adapter?.notifyItemChanged(model)
+      if (index != -1) {
+        models[index].apply {
+          status = download.status
+          currentByte = download.currentByte
+          progress = download.progress
+        }
       }
     }
   }
@@ -162,10 +201,53 @@ class DownloadActivity : BaseActivity(), ServiceConnection, DownloadListener {
     return false
   }
 
+  private fun checkPermission() {
+    // android 11以上
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+      if (!Environment.isExternalStorageManager()) {
+        "请授权访问存储空间以下载文件".showToast()
+        startActivity(
+          Intent(
+            Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+            "package:$packageName".toUri()
+          )
+        )
+      }
+    }
+  }
+
   override fun onDestroy() {
     super.onDestroy()
     _downloadService?.downloadListener = null
     unbindService(this)
     _downloadService = null
+  }
+
+  override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+    menuInflater.inflate(R.menu.menu_check, menu)
+  }
+
+  override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+    when (menuItem.itemId) {
+      R.id.edit -> toggle()
+      R.id.delete -> delete()
+      R.id.check_all -> {
+        menuItem.isChecked = !menuItem.isChecked
+        checkAll(menuItem.isChecked)
+      }
+
+      R.id.reverse_check -> reverseCheck()
+    }
+    return true
+  }
+
+  override fun onPrepareMenu(menu: Menu) {
+    super.onPrepareMenu(menu)
+    val editItem = menu.findItem(R.id.edit)
+    val bindingAdapter = binding.rv.bindingAdapter
+    editItem.icon = ContextCompat.getDrawable(
+      this,
+      if (bindingAdapter.toggleMode) R.drawable.baseline_edit_off_24 else R.drawable.baseline_mode_edit_24
+    )
   }
 }

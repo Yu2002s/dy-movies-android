@@ -1,6 +1,5 @@
 package xyz.jdynb.dymovies
 
-import android.content.Intent
 import android.os.Build
 import android.util.Log
 import xyz.jdynb.dymovies.activity.CrashActivity

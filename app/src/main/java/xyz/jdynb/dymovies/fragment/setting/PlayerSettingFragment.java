@@ -1,7 +1,5 @@
 package xyz.jdynb.dymovies.fragment.setting;
 
-import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +16,8 @@ import androidx.preference.SeekBarPreference;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.color.MaterialColors;
-import com.google.android.material.color.utilities.MaterialDynamicColors;
 
 import xyz.jdynb.dymovies.R;
-import xyz.jdynb.dymovies.activity.MainActivity;
 import xyz.jdynb.dymovies.activity.SimpleVideoActivity;
 import xyz.jdynb.dymovies.activity.VideoPlayActivity;
 import xyz.jdynb.dymovies.config.SPConfig;
@@ -39,6 +35,18 @@ public class PlayerSettingFragment extends PreferenceFragmentCompat {
     }
 
     private RecyclerView recyclerView;
+
+    private SeekBarPreference startTime;
+
+    private SeekBarPreference endTime;
+
+    private DongYuPlayer player;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        player = getPlayer();
+    }
 
     @NonNull
     @Override
@@ -67,35 +75,30 @@ public class PlayerSettingFragment extends PreferenceFragmentCompat {
             }
         });
 
-        if (requireActivity() instanceof MainActivity) {
-            // TypedArray typedArray = requireContext().obtainStyledAttributes(new int[]{com.google.android.material.R.attr.colorSurface});
-
-
-
-            // typedArray.recycle();
-        }
-
         Integer colorRes = MaterialColors.getColorOrNull(requireContext(), com.google.android.material.R.attr.colorSurface);
 
         if (colorRes != null) {
             view.setBackgroundColor(colorRes);
         }
 
-        SeekBarPreference startTime = findPreference("skip_start_time");
+        startTime = findPreference("skip_start_time");
         assert startTime != null;
-        startTime.setSummary("时间: " + TimeUtilsKt.getTime(startTime.getValue()));
+        endTime = findPreference("skip_end_time");
+        assert endTime != null;
+
+        // startTime.setSummary("时间: " + TimeUtilsKt.getTime(startTime.getValue()));
         startTime.setOnPreferenceChangeListener((preference, o) -> {
             long time = (int) o;
             preference.setSummary("时间: " + (TimeUtilsKt.getTime(time)));
+            player.setSkipVideoStart((int)o);
             return true;
         });
 
-        SeekBarPreference endTime = findPreference("skip_end_time");
-        assert endTime != null;
-        endTime.setSummary("时间: " + TimeUtilsKt.getTime(endTime.getValue()));
+        // endTime.setSummary("时间: " + TimeUtilsKt.getTime(endTime.getValue()));
         endTime.setOnPreferenceChangeListener((preference, o) -> {
             long time = (int) o;
             preference.setSummary("时间: " + (TimeUtilsKt.getTime(time)));
+            player.setSkipVideoEnd((int)time);
             return true;
         });
 
@@ -103,7 +106,6 @@ public class PlayerSettingFragment extends PreferenceFragmentCompat {
         assert danmakuLine != null;
         danmakuLine.setOnPreferenceChangeListener((preference, o) -> {
             int line = (int) o;
-            DongYuPlayer player = getPlayer();
             if (player != null) {
                 player.setDanmakuLine(line);
             }
@@ -114,7 +116,6 @@ public class PlayerSettingFragment extends PreferenceFragmentCompat {
         assert danmakuAlpha != null;
         danmakuAlpha.setOnPreferenceChangeListener((preference, o) -> {
             int alpha = (int) o;
-            DongYuPlayer player = getPlayer();
             if (player != null) {
                 player.setDanmakuAlpha(alpha / 10f);
             }
@@ -125,7 +126,6 @@ public class PlayerSettingFragment extends PreferenceFragmentCompat {
         assert danmakuSize != null;
         danmakuSize.setOnPreferenceChangeListener((preference, o) -> {
             int size = (int) o;
-            DongYuPlayer player = getPlayer();
             if (player != null) {
                 player.setDanmakuSize(size / 10f);
             }
@@ -136,7 +136,6 @@ public class PlayerSettingFragment extends PreferenceFragmentCompat {
         assert danmakuMargin != null;
         danmakuMargin.setOnPreferenceChangeListener((preference, o) -> {
             int margin = (int) o;
-            DongYuPlayer player = getPlayer();
             if (player != null) {
                 player.setDanmakuMargin(margin);
             }
@@ -147,12 +146,23 @@ public class PlayerSettingFragment extends PreferenceFragmentCompat {
         assert danmakuSpeed != null;
         danmakuSpeed.setOnPreferenceChangeListener((preference, o) -> {
             int speed = (int) o;
-            DongYuPlayer player = getPlayer();
             if (player != null) {
                 player.setDanmakuSpeed(speed / 10f);
             }
             return true;
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (player == null) {
+            return;
+        }
+        startTime.setValue(player.getSkipVideoStart());
+        endTime.setValue(player.getSkipVideoEnd());
+        startTime.setSummary("时间: " + TimeUtilsKt.getTime(startTime.getValue()));
+        endTime.setSummary("时间: " + TimeUtilsKt.getTime(endTime.getValue()));
     }
 
     @Nullable

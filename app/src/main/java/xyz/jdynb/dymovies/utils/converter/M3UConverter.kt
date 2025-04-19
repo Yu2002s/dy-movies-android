@@ -6,6 +6,10 @@ import okhttp3.Response
 import xyz.jdynb.dymovies.model.live.TvGroup
 import java.lang.reflect.Type
 
+/**
+ * 自定义请求响应转换器
+ * 将 M3U 文件转换为 TvGroup 集合
+ */
 @Suppress("UNCHECKED_CAST")
 class M3UConverter: NetConverter {
 
