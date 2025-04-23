@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
@@ -39,9 +40,10 @@ import xyz.jdynb.dymovies.databinding.ItemListSuggestBinding
 import xyz.jdynb.dymovies.fragment.search.SearchFragment
 import xyz.jdynb.dymovies.model.search.SearchSuggest
 import xyz.jdynb.dymovies.model.vod.VodDetail
+import xyz.jdynb.dymovies.model.vod.VodProvider
 import xyz.jdynb.dymovies.model.vod.VodType
 
-class SearchActivity : BaseActivity(), MenuProvider {
+class SearchActivity : BaseActivity() {
 
   companion object {
 
@@ -93,19 +95,26 @@ class SearchActivity : BaseActivity(), MenuProvider {
     val tab = binding.searchTab
     val vp = binding.searchVp
 
+    val fragments = mutableListOf<Fragment>()
     val types = mutableListOf(VodType(name = "全部"))
-    val fragments = mutableListOf<Fragment>(SearchFragment.newInstance(0))
 
     scopeNetLife {
       binding.suggestRv.models = withDefault {
         querySuggests()
       }
+      val vodProviders = Get<MutableList<VodProvider>>(Api.VOD_PROVIDER).await()
+        .also {
+          val vodProvider = VodProvider(name = "全部")
+          vodProvider.value = ""
+          it.add(0, vodProvider)
+        }
+      fragments.add(SearchFragment.newInstance(0, vodProviders))
       val result = Get<List<VodType>>(Api.VOD_TYPE_PARENT).await()
       types.addAll(result)
       fragments.addAll(result.map {
-        SearchFragment.newInstance(it.id)
+        SearchFragment.newInstance(it.id, vodProviders)
       })
-      vp.adapter?.notifyItemRangeInserted(1, types.size)
+      vp.adapter?.notifyDataSetChanged()
     }
 
     vp.adapter = SearchPageAdapter(supportFragmentManager, lifecycle, fragments)
@@ -138,6 +147,9 @@ class SearchActivity : BaseActivity(), MenuProvider {
       }
 
       override fun onQueryTextSubmit(query: String): Boolean {
+        if (fragments.isEmpty()) {
+          return false
+        }
         val text = query.trim()
         if (text.isNotEmpty()) {
           scope(Dispatchers.Default) {
@@ -179,25 +191,5 @@ class SearchActivity : BaseActivity(), MenuProvider {
   private suspend fun querySuggests() = withDefault {
     LitePal.limit(100)
       .order("updateAt desc").find<SearchSuggest>()
-  }
-
-  override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-    menuInflater.inflate(R.menu.menu_search, menu)
-    val searchItem = menu.findItem(R.id.search)
-    searchItem.expandActionView()
-    searchView = searchItem.actionView as SearchView
-    searchView.setIconifiedByDefault(false)
-    searchView.isSubmitButtonEnabled = true
-    searchView.queryHint = getString(R.string.searchbar_hint)
-
-  }
-
-  override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-    return true
-  }
-
-  override fun onDestroy() {
-    super.onDestroy()
-    // removeMenuProvider(this)
   }
 }

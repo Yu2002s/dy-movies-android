@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="m"
+            type="xyz.jdynb.dymovies.model.vod.VodType" />
+    </data>
+
+    <com.google.android.material.chip.Chip
+        app:checkedIconEnabled="true"
+        app:checkedIcon="@drawable/baseline_done_24"
+        android:id="@+id/chip"
+        android:checked="@{m.checked}"
+        android:checkable="true"
+        android:layout_marginStart="10dp"
+        android:text="@{m.name}"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</layout>

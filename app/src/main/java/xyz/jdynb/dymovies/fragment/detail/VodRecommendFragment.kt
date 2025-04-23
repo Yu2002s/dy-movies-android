@@ -22,8 +22,9 @@ import xyz.jdynb.dymovies.databinding.FragmentRecommendBinding
 import xyz.jdynb.dymovies.model.page.Page
 import xyz.jdynb.dymovies.model.vod.Vod
 import xyz.jdynb.dymovies.model.vod.VodVideo
+import xyz.jdynb.dymovies.utils.fitNavigationBar
 
-class VodRecommendFragment: Fragment() {
+class VodRecommendFragment : Fragment() {
 
   private var _binding: FragmentRecommendBinding? = null
   private val binding get() = _binding!!
@@ -47,7 +48,10 @@ class VodRecommendFragment: Fragment() {
       orientation = DividerOrientation.GRID
       setDivider(8, true)
       includeVisible = true
-    }.also { it.setHasFixedSize(true) }.setup {
+    }.also {
+      it.setHasFixedSize(true)
+      it.fitNavigationBar()
+    }.setup {
       addType<Vod>(R.layout.item_grid_vod)
       R.id.vod_img.onClick {
         VideoPlayActivity.play(getModel<Vod>().id)
@@ -58,6 +62,7 @@ class VodRecommendFragment: Fragment() {
       scope {
         val result = Get<Page<Vod>>(Api.VOD_LIST_BY_TYPE + "/${vodTypeId}") {
           param("page", index)
+          param("pid", 0) // pid 需要传递，不然会查询父类型。。。。。
         }.await()
         addData(result.data) {
           index < result.lastPage

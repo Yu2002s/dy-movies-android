@@ -73,7 +73,7 @@
                 android:maxLines="2"
                 android:ellipsize="end"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/vod_flag"
                 app:layout_constraintStart_toEndOf="@id/vod_cover"
                 app:layout_constraintTop_toTopOf="@id/vod_cover"
                 app:layout_constraintVertical_chainStyle="packed"
@@ -105,6 +105,18 @@
                 app:layout_constraintStart_toStartOf="@id/vod_name"
                 app:layout_constraintTop_toBottomOf="@id/vod_tag"
                 tools:text="导演: 钱雁秋" />
+
+            <TextView
+                android:textStyle="bold"
+                android:textColor="?attr/colorPrimary"
+                android:text="@{m.flag}"
+                android:layout_marginStart="10dp"
+                tools:text="lzm3u8"
+                android:id="@+id/vod_flag"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
             <!--<com.google.android.material.textview.MaterialTextView
                 android:id="@+id/vod_star"

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="xyz.jdynb.dymovies.model.vod.VodFilter.Item" />
+
+    </data>
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/chip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        app:chipMinTouchTargetSize="0dp"
+        app:chipMinHeight="38dp"
+        android:checkable="true"
+        tools:text="@string/app_name"
+        android:checked="@{m.checked}"
+        android:text="@{m.label}"
+        app:checkedIcon="@drawable/baseline_done_24"
+        app:checkedIconEnabled="true" />
+</layout>

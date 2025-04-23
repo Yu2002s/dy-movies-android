@@ -41,8 +41,8 @@ data class HomeVod(
     val pic: String = "",
     @SerialName("note")
     val note: String,
-    @SerialName("des")
-    val des: String,
+    // @SerialName("des")
+    // val des: String,
   )
 
   @Serializable

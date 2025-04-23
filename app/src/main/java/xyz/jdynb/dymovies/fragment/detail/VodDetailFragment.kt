@@ -3,7 +3,6 @@ package xyz.jdynb.dymovies.fragment.detail
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
-import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.danikula.videocache.parser.Playlist
 import com.drake.brv.annotaion.DividerOrientation
-import com.drake.brv.reflect.copyType
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.dividerSpace
 import com.drake.brv.utils.models
@@ -24,7 +22,6 @@ import com.drake.brv.utils.staggered
 import com.drake.net.Get
 import com.drake.net.scope.NetCoroutineScope
 import com.drake.net.utils.scope
-import com.drake.net.utils.scopeDialog
 import com.drake.net.utils.scopeNetLife
 import com.drake.net.utils.withDefault
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -57,7 +54,6 @@ import xyz.jdynb.dymovies.model.vod.VodDetail
 import xyz.jdynb.dymovies.model.vod.VodFavorite
 import xyz.jdynb.dymovies.model.vod.VodParseUrl
 import xyz.jdynb.dymovies.model.vod.VodProvider
-import xyz.jdynb.dymovies.model.vod.VodSource
 import xyz.jdynb.dymovies.model.vod.VodSourceVideo
 import xyz.jdynb.dymovies.model.vod.VodVideo
 import xyz.jdynb.dymovies.utils.DanmakuUtils
@@ -282,7 +278,8 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
         vodDetail.loadingVideos = true
         // 加载视频信息
         scopeNetLife {
-          val result = Get<List<VodVideo>>("${Api.VOD_VIDEO}/${vodDetail.vid}") {
+          val result = Get<List<VodVideo>>(Api.VOD_VIDEO_LIST) {
+            addQuery("name", vodDetail.name)
             addQuery("flag", currentSource)
           }.await()
           vodVideos.clear()

@@ -14,8 +14,10 @@ import kotlinx.serialization.serializer
 import okhttp3.Response
 import org.json.JSONException
 import org.json.JSONObject
+import xyz.jdynb.dymovies.model.result.SimpleResult
 import java.lang.reflect.Type
 import kotlin.reflect.KType
+import kotlin.reflect.typeOf
 
 class SerializationConverter(
   val success: String = "200",
@@ -40,6 +42,9 @@ class SerializationConverter(
           val bodyString = response.body?.string() ?: return null
           val kType = response.request.kType
             ?: throw ConvertException(response, "Request does not contain KType")
+          if (kType == typeOf<SimpleResult>()) {
+            return bodyString.parseBody<R>(kType)
+          }
           return try {
             val json = JSONObject(bodyString) // 获取JSON中后端定义的错误码和错误信息
             val srvCode = json.getString(this.code)

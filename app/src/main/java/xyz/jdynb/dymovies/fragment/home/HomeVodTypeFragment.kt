@@ -1,4 +1,4 @@
-package xyz.jdynb.dymovies.fragment.home;
+package xyz.jdynb.dymovies.fragment.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -53,7 +53,7 @@ class HomeVodTypeFragment : Fragment() {
 
     binding.filterRv.setup {
       singleMode = true
-      addType<VodType>(R.layout.item_filter)
+      addType<VodType>(R.layout.item_type_filter)
       onChecked { position, checked, _ ->
         val model = getModel<VodType>(position)
         model.isChecked = checked
@@ -70,7 +70,9 @@ class HomeVodTypeFragment : Fragment() {
       }
     }.also {
       it.models = vodType.children
-      it.setChecked(0, true)
+      if (!it.models.isNullOrEmpty()) {
+        it.setChecked(0, true)
+      }
     }
 
     binding.rv.grid(3).divider {

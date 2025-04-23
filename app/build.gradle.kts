@@ -13,15 +13,15 @@ android {
     applicationId = "xyz.jdynb.dymovies"
     minSdk = 24
     targetSdk = 34
-    versionCode = 6
-    versionName = "1.0.4-release"
+    versionCode = 7
+    versionName = "1.0.5"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     signingConfig = signingConfigs.getByName("debug")
 
     ndk {
       abiFilters.add("arm64-v8a")
-      // abiFilters.add("x86_64")
+      abiFilters.add("x86_64")
     }
   }
 

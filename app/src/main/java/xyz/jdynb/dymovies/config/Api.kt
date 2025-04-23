@@ -5,8 +5,8 @@ package xyz.jdynb.dymovies.config
  */
 object Api {
   // http://192.168.31.82
-  val BASE_URL = "http://dyys.jdynb.xyz"
-  // val BASE_URL = "http://192.168.31.82"
+  // val BASE_URL = "http://dyys.jdynb.xyz"
+  val BASE_URL = "http://192.168.31.82"
   // val BASE_URL = "http://192.168.110.48"
   private const val VOD = "/vods"
   const val VOD_CATE = "/vodCates"
@@ -20,8 +20,10 @@ object Api {
   const val VOD_DETAIL = "${VOD}/"
   const val VOD_VIDEO = "/vodVideos"
   const val VOD_VIDEO_SOURCE = "${VOD_VIDEO}/source"
+  const val VOD_VIDEO_LIST = "$VOD_VIDEO/video"
 
   const val VOD_SEARCH = "/vodSearchs"
+  const val VOD_PROVIDER = "/vodProviders"
 
   const val USERS = "/users"
   const val USERS_GET_CODE = "${USERS}/code"

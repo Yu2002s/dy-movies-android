@@ -2,19 +2,62 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.drake.brv.PageRefreshLayout
-        android:id="@+id/refresh"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/search_rv"
-            android:orientation="vertical"
-            app:spanCount="1"
-            app:layoutManager="com.drake.brv.layoutmanager.HoverGridLayoutManager"
+        <!--<xyz.jdynb.dymovies.view.fix.NestedScrollableHost
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content">
+        </xyz.jdynb.dymovies.view.fix.NestedScrollableHost>-->
 
-    </com.drake.brv.PageRefreshLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:id="@+id/source_rv"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <!--<androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/type_rv"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>-->
+
+        <com.drake.brv.PageRefreshLayout
+            app:layout_constraintTop_toBottomOf="@id/source_rv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/refresh"
+            android:layout_width="0dp"
+            android:layout_height="0dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/search_rv"
+                android:orientation="vertical"
+                app:spanCount="1"
+                app:layoutManager="com.drake.brv.layoutmanager.HoverGridLayoutManager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </com.drake.brv.PageRefreshLayout>
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/filter_fab"
+            android:text="筛选影片"
+            app:icon="@drawable/baseline_filter_list_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

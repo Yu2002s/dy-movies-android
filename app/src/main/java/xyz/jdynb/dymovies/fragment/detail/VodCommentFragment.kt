@@ -23,6 +23,7 @@ import xyz.jdynb.dymovies.config.Api
 import xyz.jdynb.dymovies.databinding.FragmentVodCommentBinding
 import xyz.jdynb.dymovies.dialog.VodCommentDialog
 import xyz.jdynb.dymovies.model.page.Page
+import xyz.jdynb.dymovies.model.result.SimpleResult
 import xyz.jdynb.dymovies.model.vod.VodComment
 import xyz.jdynb.dymovies.model.vod.VodReply
 import xyz.jdynb.dymovies.utils.fitNavigationBar
@@ -53,7 +54,7 @@ class VodCommentFragment : Fragment() {
     binding.bottom.fitNavigationBar()
 
     detailId = requireArguments().getInt("id");
-    val id = 1000//requireArguments().getInt("id")
+    // val id = 1000//requireArguments().getInt("id")
 
     binding.commentRv.dividerSpace(20, DividerOrientation.VERTICAL).setup {
       addType<VodComment>(R.layout.item_list_comment)
@@ -74,7 +75,7 @@ class VodCommentFragment : Fragment() {
 
     binding.page.onRefresh {
       scope {
-        val result = Get<Page<VodComment>>(Api.VOD_COMMENTS + "/$id") {
+        val result = Get<Page<VodComment>>(Api.VOD_COMMENTS + "/$detailId") {
           addQuery("page", index)
         }.await()
         addData(result.data) {
@@ -106,15 +107,15 @@ class VodCommentFragment : Fragment() {
 
   private fun submitComment(content: String, toUid: Int? = null, commentId: Int? = null) {
     scopeDialog {
-      val result = Post<String>(Api.VOD_COMMENTS) {
+      val result = Post<SimpleResult>(Api.VOD_COMMENTS) {
         json(
-          "detailId" to 1000,//detailId,
+          "detailId" to detailId,
           "toUid" to toUid,
           "commentId" to commentId,
           "content" to content
         )
       }.await()
-      result.showToast()
+      result.msg.showToast()
       if (commentId == null) {
         binding.page.refreshing()
       }
