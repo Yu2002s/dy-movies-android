@@ -3,17 +3,14 @@ package xyz.jdynb.dymovies.ui.activity
 import android.content.ComponentName
 import android.content.Intent
 import android.content.ServiceConnection
-import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import com.uaoanlao.tv.Screen
 import xyz.jdynb.dymovies.R
 import xyz.jdynb.dymovies.base.BaseActivity
 import xyz.jdynb.dymovies.databinding.ActivityVideoPlayBinding

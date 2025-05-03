@@ -5,9 +5,9 @@
       resolved="org.slf4j:slf4j-android:1.7.21"/>
   <library
       name="com.coolerfall:android-http-download-manager:1.6.2@aar"
-      jars="D:\android\gradles\caches\8.9\transforms\e4739561c40fb57dc7017e16bb39c049\transformed\jetified-android-http-download-manager-1.6.2\jars\classes.jar"
+      jars="D:\android\gradles\caches\8.9\transforms\4f8dae79f5c2e56137e84102d623882a\transformed\jetified-android-http-download-manager-1.6.2\jars\classes.jar"
       resolved="com.coolerfall:android-http-download-manager:1.6.2"
-      folder="D:\android\gradles\caches\8.9\transforms\e4739561c40fb57dc7017e16bb39c049\transformed\jetified-android-http-download-manager-1.6.2"
+      folder="D:\android\gradles\caches\8.9\transforms\4f8dae79f5c2e56137e84102d623882a\transformed\jetified-android-http-download-manager-1.6.2"
       manifest="AndroidManifest.xml"
       resFolder="res"
       assetsFolder="assets"
