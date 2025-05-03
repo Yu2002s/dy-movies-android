@@ -82,4 +82,6 @@ public interface Element {
      */
     public long getProgramDate();
 
+    boolean isAd();
+
 }

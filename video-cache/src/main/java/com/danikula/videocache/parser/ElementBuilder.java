@@ -14,6 +14,8 @@ class ElementBuilder {
     private long programDate = -1;
     private boolean discontinuity = false;
 
+    private boolean isAd = false;
+
     public ElementBuilder() {
 
     }
@@ -67,6 +69,14 @@ class ElementBuilder {
         return this;
     }
 
+    public boolean isAd() {
+        return isAd;
+    }
+
+    public void setAd(boolean ad) {
+        isAd = ad;
+    }
+
     public ElementBuilder playList(final int programId, final int bandWidth, final String codec, final String resolution) {
         this.playlistInfo = new ElementImpl.PlaylistInfoImpl(programId, bandWidth, codec, resolution);
         return this;
@@ -88,6 +98,7 @@ class ElementBuilder {
         title = null;
         programDate = -1;
         discontinuity = false;
+        isAd = false;
         resetEncryptedInfo();
         resetPlatListInfo();
         return this;
@@ -105,7 +116,7 @@ class ElementBuilder {
     }
 
     public Element create() {
-        return new ElementImpl(playlistInfo, encryptionInfo, duration, uri, title, programDate,discontinuity);
+        return new ElementImpl(playlistInfo, encryptionInfo, duration, uri, title, programDate,discontinuity, isAd);
     }
 
     @Override

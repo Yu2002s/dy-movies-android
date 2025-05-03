@@ -14,8 +14,10 @@ final class ElementImpl implements Element {
     private final String title;
     private final long programDate;
 
+    private boolean isAd;
+
     public ElementImpl(PlaylistInfo playlistInfo, EncryptionInfo encryptionInfo, double duration, URI uri,
-    		String title, long programDate, boolean discontinuity) {
+    		String title, long programDate, boolean discontinuity, boolean isAd) {
         if (uri == null) {
             throw new NullPointerException("uri");
         }
@@ -33,6 +35,7 @@ final class ElementImpl implements Element {
         this.title = title;
         this.discontinuity=discontinuity;
         this.programDate = programDate;
+        this.isAd = isAd;
     }
 
     public String getTitle() {
@@ -76,6 +79,10 @@ final class ElementImpl implements Element {
 
     public long getProgramDate() {
         return programDate;
+    }
+
+    public boolean isAd() {
+        return isAd;
     }
 
     @Override
