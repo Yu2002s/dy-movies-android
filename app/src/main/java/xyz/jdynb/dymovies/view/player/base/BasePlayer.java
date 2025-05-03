@@ -578,6 +578,11 @@ public class BasePlayer extends FrameLayout implements PlayerTouchListener, Play
         WindowInsetsControllerCompat insetsControllerCompat = WindowCompat
                 .getInsetsController(window, window.getDecorView());
 
+        // insetsControllerCompat.setAppearanceLightStatusBars(!isFullScreen);
+        boolean isDarkMode = (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES;
+        insetsControllerCompat.setAppearanceLightNavigationBars(!isDarkMode && !isFullScreen);
+
         int flags = WindowInsetsCompat.Type.statusBars() | WindowInsetsCompat.Type.navigationBars();
 
         if (isFullScreen) {

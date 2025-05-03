@@ -2,7 +2,6 @@ package xyz.jdynb.dymovies.model.download
 
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
-import androidx.databinding.ObservableBoolean
 import androidx.databinding.PropertyChangeRegistry
 import androidx.databinding.library.baseAdapters.BR
 import org.litepal.annotation.Column

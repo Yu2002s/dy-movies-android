@@ -12,7 +12,7 @@ import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import xyz.jdynb.dymovies.R
-import xyz.jdynb.dymovies.activity.DownloadActivity
+import xyz.jdynb.dymovies.ui.activity.DownloadActivity
 import xyz.jdynb.dymovies.model.download.Download
 import xyz.jdynb.dymovies.model.download.DownloadStatus
 import xyz.jdynb.dymovies.utils.showToast

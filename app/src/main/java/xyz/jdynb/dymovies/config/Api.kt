@@ -5,10 +5,10 @@ package xyz.jdynb.dymovies.config
  */
 object Api {
   // http://192.168.31.82
-  // val BASE_URL = "http://dyys.jdynb.xyz"
-  val BASE_URL = "http://192.168.31.82"
+  val BASE_URL = "http://dyys.jdynb.xyz"
+  // val BASE_URL = "http://192.168.31.82"
   // val BASE_URL = "http://192.168.110.48"
-  private const val VOD = "/vods"
+  const val VOD = "/vods"
   const val VOD_CATE = "/vodCates"
   const val VOD_TYPE = "/vodTypes"
   const val VOD_TYPE_ALL = "${VOD_TYPE}/all"
@@ -23,6 +23,7 @@ object Api {
   const val VOD_VIDEO_LIST = "$VOD_VIDEO/video"
 
   const val VOD_SEARCH = "/vodSearchs"
+  const val VOD_SEARCH_INDEX = "${VOD_SEARCH}/suggest"
   const val VOD_PROVIDER = "/vodProviders"
 
   const val USERS = "/users"
@@ -34,8 +35,11 @@ object Api {
 
   const val APP_UPDATES = "/updates"
 
+  const val FEEDBACK = "/feedbacks"
+
   /**
    * 爱奇艺搜索接口地址
    */
   const val IQIYI_SEARCH = "https://mesh.if.iqiyi.com/portal/lw/search/homePageV3"
+  const val IQIYI_VIDEO_INFO = "https://mesh.if.iqiyi.com/player/pcw/video/playervideoinfo"
 }

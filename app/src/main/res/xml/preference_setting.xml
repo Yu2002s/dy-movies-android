@@ -15,6 +15,29 @@
 
     <PreferenceCategory
         app:iconSpaceReserved="false"
+        app:title="播放设置">
+        <Preference
+            app:fragment="xyz.jdynb.dymovies.ui.fragment.setting.PlayerSettingFragment"
+            app:icon="@drawable/baseline_play_circle_filled_24"
+            app:summary="全局播放设置"
+            app:title="通用设置" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="界面设置">
+
+        <SwitchPreferenceCompat
+            app:key="dark_theme"
+            app:defaultValue="false"
+            app:icon="@drawable/baseline_style_24"
+            app:summary="开启后应用全局使用暗色主题"
+            app:title="深色模式" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
         app:title="储存相关">
         <Preference
             app:icon="@drawable/baseline_clear_all_24"
@@ -53,9 +76,9 @@
         app:title="其它App">
 
         <Preference
+            app:iconSpaceReserved="false"
             app:key="splitlanzou"
             app:summary="第三方蓝奏网盘，支持上传100M+"
-            app:iconSpaceReserved="false"
             app:title="SplitLanzou" />
 
     </PreferenceCategory>

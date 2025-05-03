@@ -29,7 +29,7 @@ data class VodFilter(
     val label: String,
     val name: String = "",
     // range 2020-2025
-    val value: String = "",
+    val value: Any? = null,
   ) : BaseObservable() {
 
     @get:Bindable

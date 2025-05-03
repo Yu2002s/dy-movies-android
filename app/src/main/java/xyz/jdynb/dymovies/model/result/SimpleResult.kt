@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 @Keep
 data class SimpleResult(
   val code: Int,
-  val msg: String,
+  val msg: String? = null,
 )

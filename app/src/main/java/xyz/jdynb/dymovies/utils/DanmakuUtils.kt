@@ -2,10 +2,10 @@ package xyz.jdynb.dymovies.utils
 
 import android.util.Log
 import com.drake.net.Get
-import com.drake.net.utils.scope
-import com.drake.net.utils.withDefault
+import kotlinx.coroutines.coroutineScope
 import xyz.jdynb.dymovies.config.Api
-import xyz.jdynb.dymovies.model.search.IqiyiSearch
+import xyz.jdynb.dymovies.model.iqiyi.IQiYiVideoInfo
+import xyz.jdynb.dymovies.model.iqiyi.IqiyiSearch
 import xyz.jdynb.dymovies.utils.converter.SerializationConverter
 
 /**
@@ -13,12 +13,14 @@ import xyz.jdynb.dymovies.utils.converter.SerializationConverter
  */
 object DanmakuUtils {
 
+  private val TAG = DanmakuUtils::class.java.simpleName
+
   private const val DAN_MA_KU_API = "https://dmku.hls.one/?ac=dm&url="
 
   /**
    * 获取弹幕库地址
    */
-  suspend fun getDanmakuUrls(name: String, year: String? = null) = withDefault {
+  suspend fun getDanmakuUrls(name: String, year: String? = null) = coroutineScope {
     val result = Get<IqiyiSearch>(Api.IQIYI_SEARCH) {
       converter = SerializationConverter("0")
       param("key", name, true)
@@ -26,20 +28,28 @@ object DanmakuUtils {
       param("pageNum", 1)
       param("pageSize", 10)
     }.await()
-    Log.d("jdy", "searchName: $name, $year; response: $result")
+    Log.d(TAG, "searchName: $name, $year")
     for (template in result.templates) {
-      val matchYear = template.albumInfo?.year?.value == year
+      val albumInfo = template.albumInfo
+      val matchYear = albumInfo?.year?.value == year
       if (!year.isNullOrEmpty() && !matchYear) {
         continue
       }
-      if (template.template == 101 || template.template == 102) {
-        return@withDefault template.albumInfo!!.videos.map { DAN_MA_KU_API + it.pageUrl }
-      } else if (template.template == 103) {
-        // todo
+      val templateCode = template.template
+      return@coroutineScope when (templateCode) {
+        101, 102 -> albumInfo!!.videos.map { DAN_MA_KU_API + it.pageUrl }
+        103 -> {
+          listOf(DAN_MA_KU_API + Get<IQiYiVideoInfo>(Api.IQIYI_VIDEO_INFO) {
+            converter = SerializationConverter("A00000")
+            setQuery("id", albumInfo!!.qipuId)
+            setQuery("locale", "cn_s")
+          }.await().vu)
+        }
+        else -> emptyList()
       }
     }
 
-    return@withDefault emptyList()
+    return@coroutineScope emptyList()
   }
 
 }

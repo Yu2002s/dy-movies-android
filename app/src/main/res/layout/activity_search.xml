@@ -51,6 +51,14 @@
             android:visibility="visible"
             app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:id="@+id/index_rv"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/search_vp"
             android:layout_width="match_parent"

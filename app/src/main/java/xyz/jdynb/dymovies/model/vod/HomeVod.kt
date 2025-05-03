@@ -14,6 +14,7 @@ data class HomeVod(
   val actions: List<Action> = listOf(
     Action("download", "下载列表", R.drawable.baseline_arrow_circle_down_24),
     Action("history", "历史收藏", R.drawable.baseline_history_24),
+    Action("feedback", "反馈建议", R.drawable.baseline_feedback_24)
   ),
   val feeds: List<VodFeed> = listOf()
 ) {

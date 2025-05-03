@@ -7,10 +7,15 @@ import android.os.Parcelable
 import android.util.Base64
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.drake.net.request.BodyRequest
+import com.drake.net.request.MediaConst
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
+import okhttp3.RequestBody.Companion.toRequestBody
 import xyz.jdynb.dymovies.DyMoviesApplication
+import kotlin.reflect.typeOf
 
 /**
  * 启动一个 Activity
@@ -122,7 +127,10 @@ inline fun <reified T : @Serializable Any> Bundle.getSerializableForKey(key: Str
 /**
  * Fragment 中添加序列化参数
  */
-inline fun <reified T : @Serializable Any> Fragment.setSerializableArguments(key: String, value: T) {
+inline fun <reified T : @Serializable Any> Fragment.setSerializableArguments(
+  key: String,
+  value: T
+) {
   arguments = (arguments ?: Bundle()).apply {
     putSerializable(key, value)
   }
@@ -135,10 +143,23 @@ inline fun <reified T : @Serializable Any> Fragment.getSerializableArguments(key
   return arguments?.getSerializableForKey(key)
 }
 
-inline fun <reified T: @Serializable Any> Activity.setSerializableArguments(key: String, value: T) {
+inline fun <reified T : @Serializable Any> Activity.setSerializableArguments(
+  key: String,
+  value: T
+) {
   intent.extras?.putSerializable(key, value)
 }
 
-inline fun <reified T: @Serializable Any> Activity.getSerializableArguments(key: String) : T? {
+inline fun <reified T : @Serializable Any> Activity.getSerializableArguments(key: String): T? {
   return intent.extras?.getSerializableForKey(key)
+}
+
+val json = Json {
+  // 序列化默认值
+  encodeDefaults = true
+}
+
+inline fun <reified T> BodyRequest.json(body: T) {
+  this.body = json.encodeToString(body)
+    .toRequestBody(MediaConst.JSON)
 }

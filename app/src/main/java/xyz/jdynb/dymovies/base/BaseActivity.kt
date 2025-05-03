@@ -1,7 +1,10 @@
 package xyz.jdynb.dymovies.base
 
+import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
+import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -10,11 +13,14 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
+import xyz.jdynb.dymovies.event.ThemeObserver
+import xyz.jdynb.dymovies.ui.activity.MainActivity
+import xyz.jdynb.dymovies.utils.ThemeUtils
 
 /**
  * Activity 基类
  */
-open class BaseActivity : AppCompatActivity() {
+open class BaseActivity : AppCompatActivity(), ThemeObserver {
 
   companion object {
     /**
@@ -24,18 +30,19 @@ open class BaseActivity : AppCompatActivity() {
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+    ThemeUtils.setTheme(this)
+    ThemeUtils.addObserver(this)
     initWindow()
+    super.onCreate(savedInstanceState)
+  }
+
+  override fun onDestroy() {
+    super.onDestroy()
+    ThemeUtils.removeObserver(this)
   }
 
   private fun initWindow() {
-    // 如果是小白条导航栏，就直接使用沉浸式
-    if (isSmallNavigationBar) {
-      WindowCompat.setDecorFitsSystemWindows(window, false)
-    } else {
-      // 如果不是小白条，开启自适应导航
-      enableEdgeToEdge()
-    }
+    WindowCompat.setDecorFitsSystemWindows(window, false)
     ViewCompat.setOnApplyWindowInsetsListener(window.decorView) { v, insets ->
       ViewCompat.setOnApplyWindowInsetsListener(v, null)
       val statusBarHeight = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
@@ -88,6 +95,11 @@ open class BaseActivity : AppCompatActivity() {
       }
     }
     return null
+  }
+
+  override fun onThemeChanged(theme: String) {
+    ThemeUtils.setTheme(this)
+    recreate()
   }
 
 }

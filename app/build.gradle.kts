@@ -13,15 +13,15 @@ android {
     applicationId = "xyz.jdynb.dymovies"
     minSdk = 24
     targetSdk = 34
-    versionCode = 7
-    versionName = "1.0.5"
+    versionCode = 10
+    versionName = "1.0.8"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     signingConfig = signingConfigs.getByName("debug")
 
     ndk {
       abiFilters.add("arm64-v8a")
-      abiFilters.add("x86_64")
+      // abiFilters.add("x86_64")
     }
   }
 
@@ -87,6 +87,8 @@ dependencies {
   implementation(libs.flexbox)
   implementation(libs.kotlinx.coroutines.core)
   implementation(libs.kotlinx.coroutines.android)
+  // implementation(libs.refresh.ball)
+  implementation(libs.refresh.radar)
   testImplementation(libs.junit)
   androidTestImplementation(libs.androidx.junit)
   androidTestImplementation(libs.androidx.espresso.core)

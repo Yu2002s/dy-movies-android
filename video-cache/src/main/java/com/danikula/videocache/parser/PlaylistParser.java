@@ -18,6 +18,8 @@ import static com.danikula.videocache.parser.M3uConstants.*;
 
 import android.util.Log;
 
+import com.danikula.videocache.M3U8AdRange;
+
 
 /**
  * Implementation based on http://tools.ietf.org/html/draft-pantos-http-live-streaming-02#section-3.1.
@@ -56,7 +58,7 @@ public final class PlaylistParser {
         boolean firstLine = true;
 
         int lineNumber = 0;
-                          
+
         final List<Element> elements = new ArrayList<Element>(10);
         final ElementBuilder builder = new ElementBuilder();
         boolean endListSet = false;
@@ -82,9 +84,20 @@ public final class PlaylistParser {
             d7efc7f70110934671.ts
             #EXT-X-DISCONTINUITY
 
+
+            一般 5 - 7 ts
          */
 
-        boolean isAd = false;
+        // boolean isAd = false;
+        // long beforeTsNum = -1;
+        // 连续被打乱的次数，如果大于等于 4 小于等于 7这个区间，很有可能是 AD
+        // int count = 0;
+        // boolean canFilter = true;
+        // boolean isAd = false;
+
+        // Pattern pattern = Pattern.compile("(\\d{3,})\\.ts$");
+        // M3U8AdRange m3U8AdRange = new M3U8AdRange(0);
+        // List<M3U8AdRange> adRanges = new ArrayList<>();
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine().trim();
@@ -96,11 +109,11 @@ public final class PlaylistParser {
                         firstLine = false;
                     } else if (line.startsWith(EXTINF)) {
                         parseExtInf(line, lineNumber, builder);
-                        double duration = builder.getDuration();
+                        /*double duration = builder.getDuration();
                         // 暂时：过滤澳门新葡京的 flag: lzm3u8，后续可能要调整
                         if (builder.isDiscontinuity() && duration == 6.666667) {
                             isAd = true;
-                        }
+                        }*/
                     } else if (line.startsWith(EXT_X_ENDLIST)) {
                         endListSet = true;
                     } else if (line.startsWith(EXT_X_TARGET_DURATION)) {
@@ -114,10 +127,16 @@ public final class PlaylistParser {
                         }
                         mediaSequenceNumber = parseMediaSequence(line, lineNumber);
                     } else if (line.startsWith(EXT_X_DISCONTINUITY)) {
-                    	builder.discontinuity(true);
-                        if (isAd) {
-                            isAd  = false;
+                        builder.discontinuity(true);
+                        if (builder.isAd()) {
+                            builder.setAd(false);
                         }
+                        /*if (m3U8AdRange.getStart() > 0 && isAd) {
+                            m3U8AdRange.setEnd(lineNumber - 1);
+                            adRanges.add(m3U8AdRange);
+                            isAd = false;
+                        }
+                        m3U8AdRange = new M3U8AdRange(lineNumber);*/
                     } else if (line.startsWith(EXT_X_PROGRAM_DATE_TIME)) {
                         long programDateTime = parseProgramDateTime(line, lineNumber);
                         builder.programDate(programDateTime);
@@ -139,17 +158,34 @@ public final class PlaylistParser {
                 } else {
                     if (firstLine) {
                         checkFirstLine(lineNumber, line);
-                    }
+                    } /*else {
+                        Matcher matcher = pattern.matcher(line);
+                        if (canFilter && matcher.find()) {
+                            long num = Long.parseLong(matcher.group(1));
+                            *//*if (beforeTsNum == -1 && num > 1) {
+                                canFilter = false;
+                            }*//*
+                            long diff = num - beforeTsNum;
+                            if (diff == 1 || beforeTsNum == -1) {
+                                beforeTsNum = num;
+                            } else {
+                                m3U8AdRange.setEnd(lineNumber);
+                                if (m3U8AdRange.length() >= 6 && m3U8AdRange.length() <= 14) {
+                                    isAd = true;
+                                }
+                            }
+                        } else {
+                            canFilter = false;
+                            beforeTsNum = -1;
+                        }
+                    }*/
 
                     // No prefix: must be the media uri.
                     builder.encrypted(currentEncryption);
 
                     builder.uri(toURI(line));
-
-                    // 过滤澳门新葡京广告
-                    if (!isAd) {
-                        elements.add(builder.create());
-                    }
+                    // m3U8AdRange.setPosition(elements.size());
+                    elements.add(builder.create());
 
                     // a new element begins.
                     builder.reset();
@@ -158,6 +194,14 @@ public final class PlaylistParser {
 
             lineNumber++;
         }
+
+        /*if (!adRanges.isEmpty()) {
+            Log.d("jdy", "adRanges: " + adRanges);
+            for (int i = adRanges.size() - 1; i >= 0; i --) {
+                int position = adRanges.get(i).getPosition();
+                elements.remove(position);
+            }
+        }*/
 
         /*String[] lines = new String[elements.size()];
 

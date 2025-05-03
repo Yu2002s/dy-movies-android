@@ -27,6 +27,7 @@ class SerializationConverter(
 
   companion object {
     val jsonDecoder = Json {
+      ignoreUnknownKeys = true // 忽略未知属性名
       ignoreUnknownKeys = true // 数据类可以不用声明Json的所有字段
       coerceInputValues = true // 如果Json字段是Null则使用数据类字段默认值
     }
@@ -42,14 +43,15 @@ class SerializationConverter(
           val bodyString = response.body?.string() ?: return null
           val kType = response.request.kType
             ?: throw ConvertException(response, "Request does not contain KType")
-          if (kType == typeOf<SimpleResult>()) {
-            return bodyString.parseBody<R>(kType)
-          }
           return try {
             val json = JSONObject(bodyString) // 获取JSON中后端定义的错误码和错误信息
             val srvCode = json.getString(this.code)
             if (srvCode == success) { // 对比后端自定义错误码
               if (!json.has("data")) {
+                // 当 data 为空时，返回的只是简单的状态信息，使用 SimpleResult 进行解析
+                if (kType == typeOf<SimpleResult>()) {
+                  return bodyString.parseBody<R>(kType)
+                }
                 return null
               }
               json.getString("data").parseBody<R>(kType)
@@ -61,7 +63,6 @@ class SerializationConverter(
             bodyString.parseBody<R>(kType)
           }
         }
-
         code in 400..499 -> throw RequestParamsException(response, code.toString()) // 请求参数错误
         code >= 500 -> throw ServerResponseException(response, code.toString()) // 服务器异常错误
         else -> throw ConvertException(response, message = "Http status code not within range")

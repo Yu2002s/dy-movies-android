@@ -23,6 +23,8 @@ data class VodType(
     var children: List<VodType> = emptyList()
 ): BaseObservable() {
 
+    fun isChild() = pid == null || children.isEmpty()
+
     @get:Bindable
     var isChecked = false
         set(value) {

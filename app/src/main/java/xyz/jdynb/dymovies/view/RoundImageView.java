@@ -12,6 +12,9 @@ import androidx.appcompat.widget.AppCompatImageView;
 
 import xyz.jdynb.dymovies.R;
 
+/**
+ * 支持圆角的 ImageView
+ */
 public class RoundImageView extends AppCompatImageView {
 
     private final Context context;

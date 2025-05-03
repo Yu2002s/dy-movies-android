@@ -2,7 +2,7 @@ package xyz.jdynb.dymovies
 
 import android.os.Build
 import android.util.Log
-import xyz.jdynb.dymovies.activity.CrashActivity
+import xyz.jdynb.dymovies.ui.activity.CrashActivity
 import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.system.exitProcess

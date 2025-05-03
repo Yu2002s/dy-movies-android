@@ -1,9 +1,9 @@
 package xyz.jdynb.dymovies.model.vod
 
 data class VodFilterParams(
-  /* val keyword: String = "",
-   val tid: Int? = null,
-   val pid: Int? = null,*/
-  var year: String = "",
-  var sort: String = "latest"
+  var type: Int? = null,
+  var year: String? = null,
+  var sort: Int = 1,
+  var area: String? = null,
+  var page: Int = 1,
 )

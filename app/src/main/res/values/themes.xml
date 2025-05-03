@@ -8,11 +8,31 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
         <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>
-        <!--<item name="android:enforceStatusBarContrast" tools:targetApi="q">false</item>-->
+        <item name="android:enforceStatusBarContrast" tools:targetApi="q">false</item>
         <item name="materialCardViewStyle">@style/Widget.Material3.CardView.Filled</item>
+
+        <item name="switchPreferenceCompatStyle">@style/SwitchPreferenceStyle</item>
     </style>
 
     <style name="Theme.DyMovies" parent="Base.Theme.DyMovies" />
+
+    <!-- 亮色主题 -->
+    <style name="Theme.DyMovies.Light" parent="Theme.Material3.DynamicColors.Light.NoActionBar">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+    </style>
+
+    <!-- 深色主题 -->
+    <style name="Theme.DyMovies.Dark" parent="Theme.Material3.DynamicColors.Dark.NoActionBar" >
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+    </style>
 
     <style name="BaseDialogStyle" parent="Theme.Material3.DayNight.Dialog">
         <item name="android:navigationBarColor">@android:color/transparent</item>
@@ -20,7 +40,8 @@
         <item name="isMaterial3DynamicColorApplied">true</item>
     </style>
 
-    <string name="SlideAnim">
+    <style name="SwitchPreferenceStyle" parent="Preference.SwitchPreferenceCompat.Material">
+        <item name="widgetLayout">@layout/layout_switch</item>
+    </style>
 
-    </string>
 </resources>

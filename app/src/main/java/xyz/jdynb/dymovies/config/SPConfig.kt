@@ -97,6 +97,8 @@ class SPConfig {
          */
         const val APP_THEME = "theme"
 
+        const val DARK_THEME = "dark_theme"
+
         /**
          * 我的页面封面地址
          */
@@ -111,5 +113,7 @@ class SPConfig {
          * 用户邮箱
          */
         const val USER_EMAIL = "user_email"
+
+        const val AD_FILTER = "ad_filter"
     }
 }

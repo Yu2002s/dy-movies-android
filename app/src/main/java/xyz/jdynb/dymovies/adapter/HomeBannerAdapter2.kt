@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager.widget.PagerAdapter
 import xyz.jdynb.dymovies.R
-import xyz.jdynb.dymovies.activity.VideoPlayActivity
+import xyz.jdynb.dymovies.ui.activity.VideoPlayActivity
 import xyz.jdynb.dymovies.databinding.ItemListBannerBinding
 import xyz.jdynb.dymovies.model.vod.HomeVod
 

@@ -22,13 +22,12 @@ import com.drake.net.okhttp.setRequestInterceptor
 import com.drake.net.request.BaseRequest
 import com.drake.statelayout.StateConfig
 import com.scwang.smart.refresh.footer.ClassicsFooter
-import com.scwang.smart.refresh.header.MaterialHeader
+import com.scwang.smart.refresh.header.BezierRadarHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import okhttp3.Cache
 import org.litepal.LitePal
 import xyz.jdynb.dymovies.config.Api
 import xyz.jdynb.dymovies.config.SPConfig
-import xyz.jdynb.dymovies.exception.LoadingException
 import xyz.jdynb.dymovies.utils.AesEncryption
 import xyz.jdynb.dymovies.utils.Checker
 import xyz.jdynb.dymovies.utils.ContextUtils
@@ -144,13 +143,17 @@ class DyMoviesApplication : Application() {
           is NetConnectException -> "请检查当前的网络连接后点击重试"
           is NetSocketTimeoutException -> "网络超时，请稍后点击重试"
           is HttpResponseException -> {
-            if (error.response.code == 500) {
-              "网络请求失败，请点击重试或重新打开App"
+            if (tag == "401") {
+              "请先登录"
             } else {
-              getString(R.string.error_tips)
+              if (error.response.code == 500) {
+                "网络请求失败，请点击重试或重新打开App"
+              } else {
+                getString(R.string.error_tips)
+              }
             }
           }
-          is LoadingException -> "加载失败了，点击重试。若多次失败请反馈\n${error.message}"
+
           else -> getString(R.string.error_tips)
         }
       }
@@ -167,8 +170,13 @@ class DyMoviesApplication : Application() {
   }
 
   private fun initSmartRefreshLayout() {
-    SmartRefreshLayout.setDefaultRefreshHeaderCreator { _, _ -> MaterialHeader(this) }
-    SmartRefreshLayout.setDefaultRefreshFooterCreator { _, _ -> ClassicsFooter(this) }
+    SmartRefreshLayout.setDefaultRefreshHeaderCreator { _, _ ->
+      BezierRadarHeader(this)
+    }
+
+    SmartRefreshLayout.setDefaultRefreshFooterCreator { _, _ ->
+      ClassicsFooter(this)
+    }
   }
 
   private fun View.startAnimation() {

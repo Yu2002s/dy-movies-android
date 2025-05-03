@@ -30,9 +30,8 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".ui.activity.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.DyMovies"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,32 +40,34 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.AllTypeActivity"
+            android:name=".ui.activity.AllTypeActivity"
             android:label="@string/all_type" />
-        <activity android:name=".activity.HomeVodTypeActivity" />
+        <activity android:name=".ui.activity.HomeVodTypeActivity" />
 
         <activity
-            android:name=".activity.SimpleVideoActivity"
+            android:name=".ui.activity.SimpleVideoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
 
         <activity
-            android:name=".activity.VideoPlayActivity"
+            android:name=".ui.activity.VideoPlayActivity"
             android:windowSoftInputMode="adjustPan"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
 
-        <activity android:name=".activity.DownloadActivity" />
+        <activity android:name=".ui.activity.DownloadActivity" />
 
         <service android:name=".download.DownloadService" />
 
-        <activity android:name=".activity.SearchActivity" android:windowSoftInputMode="stateVisible" />
+        <activity android:name=".ui.activity.SearchActivity" android:windowSoftInputMode="stateVisible" />
 
-        <activity android:name=".activity.VodHistoryActivity" android:label="@string/history_favorite" />
+        <activity android:name=".ui.activity.VodHistoryActivity" android:label="@string/history_favorite" />
 
-        <activity android:name=".activity.LoginActivity" android:label="@string/login_sign" />
+        <activity android:name=".ui.activity.LoginActivity" android:label="@string/login_sign" />
 
-        <activity android:name=".activity.CrashActivity" />
+        <activity android:name=".ui.activity.CrashActivity" />
 
-        <activity android:name=".activity.VodLatestActivity" android:label="@string/vod_latest" />
+        <activity android:name=".ui.activity.VodLatestActivity" android:label="@string/vod_latest" />
+
+        <activity android:name=".ui.activity.FeedbackActivity" android:label="@string/feedback" />
 
     </application>
 

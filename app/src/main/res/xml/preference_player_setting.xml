@@ -34,14 +34,14 @@
             app:switchTextOn="开启"
             app:title="自动全屏" />
 
-        <SwitchPreferenceCompat
+        <!--<SwitchPreferenceCompat
             android:key="small_progress"
             android:summary="页面底部的小进度条(重进生效)"
             android:switchTextOn="开启小进度条"
             app:defaultValue="false"
             app:iconSpaceReserved="false"
             app:switchTextOff="关闭小进度条"
-            app:title="小进度条" />
+            app:title="小进度条" />-->
 
         <SwitchPreferenceCompat
             app:defaultValue="true"
@@ -52,6 +52,20 @@
             app:switchTextOn="开启"
             app:title="自动切换解析" />
 
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="广告设置">
+
+        <SwitchPreferenceCompat
+            app:key="ad_filter"
+            app:defaultValue="true"
+            app:icon="@drawable/baseline_filter_list_alt_24"
+            app:summary="实验性，开启此功能可能会造成播放异常，修改后需要重新打开播放页面"
+            app:title="广告过滤">
+
+        </SwitchPreferenceCompat>
     </PreferenceCategory>
 
     <PreferenceCategory

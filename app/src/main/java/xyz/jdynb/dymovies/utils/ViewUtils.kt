@@ -33,7 +33,7 @@ fun RecyclerView.lazyLoadImg(): RecyclerView {
 /**
  * 让 View 自适应底部的导航栏
  */
-fun View.fitNavigationBar(target: View? = null, oneSet: Boolean = false) {
+fun View.fitNavigationBar(target: View? = null, oneSet: Boolean = false, defaultBottom: Int = 0) {
   val targetView = target ?: this
   ViewCompat.setOnApplyWindowInsetsListener(targetView) { v, insets ->
     if (oneSet) {
@@ -42,7 +42,7 @@ fun View.fitNavigationBar(target: View? = null, oneSet: Boolean = false) {
     if (v is ViewGroup) {
       v.clipToPadding = false
     }
-    val bottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+    val bottom = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom + defaultBottom
     v.updatePadding(bottom = bottom)
     insets
   }

@@ -40,6 +40,8 @@
             tools:src="@drawable/baseline_keyboard_arrow_right_24" />
 
         <androidx.recyclerview.widget.RecyclerView
+            app:fastScrollEnabled="false"
+            android:nestedScrollingEnabled="false"
             visible="@{m.itemExpand}"
             android:id="@+id/rv"
             android:layout_width="0dp"
