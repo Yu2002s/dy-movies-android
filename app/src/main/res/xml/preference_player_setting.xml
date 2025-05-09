@@ -59,6 +59,7 @@
         app:title="广告设置">
 
         <SwitchPreferenceCompat
+            app:enabled="false"
             app:key="ad_filter"
             app:defaultValue="true"
             app:icon="@drawable/baseline_filter_list_alt_24"

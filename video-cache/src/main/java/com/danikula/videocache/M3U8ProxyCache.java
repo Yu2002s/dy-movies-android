@@ -3,8 +3,6 @@ package com.danikula.videocache;
 import static com.danikula.videocache.ProxyCacheUtils.DEFAULT_BUFFER_SIZE;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -31,7 +29,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +48,7 @@ public class M3U8ProxyCache extends HttpProxyCache {
     /**
      * 是否开启广告过滤
      */
-    public static boolean adFilter = true;
+    public static boolean adFilter = false;
 
     private static final int M3U8_CACHE_STEP = 20;
     private File m3u8CacheDir;

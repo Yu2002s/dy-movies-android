@@ -2,10 +2,11 @@ package xyz.jdynb.dymovies.ui.fragment.setting
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.net.toUri
-import androidx.preference.DialogPreference
+import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
@@ -13,13 +14,14 @@ import com.drake.net.Get
 import com.drake.net.utils.scopeNetLife
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import xyz.jdynb.dymovies.R
-import xyz.jdynb.dymovies.ui.activity.LoginActivity
 import xyz.jdynb.dymovies.config.Api
 import xyz.jdynb.dymovies.config.AppConfig.DEV_HOME_URL
 import xyz.jdynb.dymovies.config.AppConfig.SPLIT_LANZOU_URL
 import xyz.jdynb.dymovies.config.SPConfig
 import xyz.jdynb.dymovies.databinding.LayoutHeaderBinding
 import xyz.jdynb.dymovies.model.user.User
+import xyz.jdynb.dymovies.ui.activity.DownloadActivity
+import xyz.jdynb.dymovies.ui.activity.LoginActivity
 import xyz.jdynb.dymovies.utils.SpUtils.get
 import xyz.jdynb.dymovies.utils.SpUtils.remove
 import xyz.jdynb.dymovies.utils.ThemeUtils
@@ -113,6 +115,17 @@ class SettingFragment : PreferenceFragmentCompat() {
       ThemeUtils.notifyThemeChanged()
       true
     }
+
+    findPreference<Preference>("download_manager")?.setOnPreferenceClickListener {
+      startActivity<DownloadActivity>()
+      true
+    }
+
+    findPreference<EditTextPreference>(SPConfig.DOWNLOAD_PATH)?.setDefaultValue(
+      Environment.getExternalStoragePublicDirectory(
+        Environment.DIRECTORY_DOWNLOADS
+      )!!.path + "/DongYuMovies"
+    )
   }
 
   private fun getUser() {

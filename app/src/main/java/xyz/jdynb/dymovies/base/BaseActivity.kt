@@ -1,11 +1,7 @@
 package xyz.jdynb.dymovies.base
 
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewGroup
-import androidx.activity.SystemBarStyle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
@@ -14,7 +10,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import xyz.jdynb.dymovies.event.ThemeObserver
-import xyz.jdynb.dymovies.ui.activity.MainActivity
 import xyz.jdynb.dymovies.utils.ThemeUtils
 
 /**

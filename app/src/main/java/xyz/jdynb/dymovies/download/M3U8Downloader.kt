@@ -4,12 +4,12 @@ import android.annotation.SuppressLint
 import android.os.Environment
 import android.text.TextUtils
 import android.util.Log
-import com.danikula.videocache.parser.M3uConstants
-import com.danikula.videocache.parser.ParseException
 import org.litepal.LitePal
 import org.litepal.extension.findFirst
 import xyz.jdynb.dymovies.DyMoviesApplication
+import xyz.jdynb.dymovies.config.SPConfig
 import xyz.jdynb.dymovies.model.download.Download
+import xyz.jdynb.dymovies.utils.SpUtils.getRequired
 import xyz.jdynb.dymovies.utils.isUrl
 import java.io.BufferedInputStream
 import java.io.BufferedReader
@@ -118,11 +118,12 @@ class M3U8Downloader(
         //合并后的文件存储目录
         private val outputDir: String
             get() {
+                val downloadFolder = SPConfig.DOWNLOAD_PATH.getRequired<String>(DEFAULT_OUTPUT_DIR)
                 val groupName = download.groupName
                 if (groupName.isNotEmpty()) {
-                    return "$DEFAULT_OUTPUT_DIR/$groupName"
+                    return "$downloadFolder/$groupName"
                 }
-                return DEFAULT_OUTPUT_DIR
+                return downloadFolder
             }
 
         //合并后的视频文件名称
@@ -728,7 +729,7 @@ class M3U8Downloader(
                 } catch (e: Exception) {
                     Log.e(TAG, "第" + count + "获取链接重试！\t" + urls)
                     count++
-                    e.printStackTrace();
+                    e.printStackTrace()
                 } finally {
                     httpURLConnection?.disconnect()
                 }

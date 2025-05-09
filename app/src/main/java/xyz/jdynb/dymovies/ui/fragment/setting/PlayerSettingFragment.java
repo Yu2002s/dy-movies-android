@@ -12,7 +12,6 @@ import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentActivity;
-import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreferenceCompat;
@@ -22,10 +21,10 @@ import com.danikula.videocache.M3U8ProxyCache;
 import com.google.android.material.color.MaterialColors;
 
 import xyz.jdynb.dymovies.R;
+import xyz.jdynb.dymovies.config.SPConfig;
 import xyz.jdynb.dymovies.databinding.LayoutHeaderBinding;
 import xyz.jdynb.dymovies.ui.activity.SimpleVideoActivity;
 import xyz.jdynb.dymovies.ui.activity.VideoPlayActivity;
-import xyz.jdynb.dymovies.config.SPConfig;
 import xyz.jdynb.dymovies.utils.TimeUtilsKt;
 import xyz.jdynb.dymovies.view.player.DongYuPlayer;
 
@@ -171,7 +170,7 @@ public class PlayerSettingFragment extends PreferenceFragmentCompat {
         assert adFilter != null;
         adFilter.setOnPreferenceChangeListener((preference, newValue) -> {
             M3U8ProxyCache.adFilter = (boolean) newValue;
-            return false;
+            return true;
         });
     }
 

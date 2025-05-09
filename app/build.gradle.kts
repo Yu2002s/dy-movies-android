@@ -1,7 +1,7 @@
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.android)
-  kotlin("plugin.serialization") version(libs.versions.kotlin)
+  kotlin("plugin.serialization") version (libs.versions.kotlin)
   id("kotlin-kapt")
 }
 
@@ -13,8 +13,8 @@ android {
     applicationId = "xyz.jdynb.dymovies"
     minSdk = 24
     targetSdk = 34
-    versionCode = 10
-    versionName = "1.0.8"
+    versionCode = 11
+    versionName = "1.0.81"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     signingConfig = signingConfigs.getByName("debug")

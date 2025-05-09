@@ -115,5 +115,7 @@ class SPConfig {
         const val USER_EMAIL = "user_email"
 
         const val AD_FILTER = "ad_filter"
+
+        const val DOWNLOAD_PATH = "download_path"
     }
 }

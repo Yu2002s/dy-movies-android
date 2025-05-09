@@ -1,38 +1,28 @@
 package xyz.jdynb.dymovies.ui.activity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.SearchView.OnQueryTextListener
-import androidx.core.view.MenuProvider
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setDifferModels
 import com.drake.brv.utils.setup
 import com.drake.net.Get
 import com.drake.net.utils.scope
-import com.drake.net.utils.scopeLife
 import com.drake.net.utils.scopeNetLife
-import com.drake.net.utils.withDefault
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import org.litepal.LitePal
 import org.litepal.extension.find
 import xyz.jdynb.dymovies.R
@@ -40,11 +30,13 @@ import xyz.jdynb.dymovies.base.BaseActivity
 import xyz.jdynb.dymovies.config.Api
 import xyz.jdynb.dymovies.databinding.ActivitySearchBinding
 import xyz.jdynb.dymovies.databinding.ItemListSuggestBinding
-import xyz.jdynb.dymovies.ui.fragment.search.SearchFragment
 import xyz.jdynb.dymovies.model.search.SearchSuggest
-import xyz.jdynb.dymovies.model.vod.VodDetail
 import xyz.jdynb.dymovies.model.vod.VodProvider
 import xyz.jdynb.dymovies.model.vod.VodType
+import xyz.jdynb.dymovies.ui.fragment.search.SearchFragment
+import xyz.jdynb.dymovies.ui.fragment.search.SearchVodFragment
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 class SearchActivity : BaseActivity() {
 
@@ -62,6 +54,7 @@ class SearchActivity : BaseActivity() {
 
   private val mHandler = Handler(Looper.getMainLooper())
 
+  @SuppressLint("NotifyDataSetChanged")
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     binding = DataBindingUtil.setContentView(this, R.layout.activity_search)
@@ -106,25 +99,21 @@ class SearchActivity : BaseActivity() {
     val tab = binding.searchTab
     val vp = binding.searchVp
 
-    val fragments = mutableListOf<Fragment>()
-    val types = mutableListOf(VodType(name = "全部"))
+    val fragments = mutableListOf<SearchFragment>(/*SearchParseFragment()*/)
+    val types = mutableListOf(/*VodType(name = "解析"), */VodType(name = "全部"))
 
     scopeNetLife {
-      binding.suggestRv.models = withDefault {
-        querySuggests()
-      }
+      binding.suggestRv.models = querySuggests()
       val vodProviders = Get<MutableList<VodProvider>>(Api.VOD_PROVIDER).await()
-        .also {
-          val vodProvider = VodProvider(name = "全部")
-          vodProvider.value = ""
-          it.add(0, vodProvider)
-        }
+      val vodProvider = VodProvider(name = "全部")
+      vodProvider.value = ""
+      vodProviders.add(0, vodProvider)
       val result = Get<List<VodType>>(Api.VOD_TYPE_ALL).await()
-      val allTypes = result.flatMap { it.children }// .filter { it.pid != null }
-      fragments.add(SearchFragment.newInstance(VodType(children = allTypes), vodProviders))
+      val allTypes = result.flatMap { it.children }
+      fragments.add(SearchVodFragment.newInstance(VodType(children = allTypes), vodProviders))
       types.addAll(result)
       fragments.addAll(result.map {
-        SearchFragment.newInstance(it, vodProviders)
+        SearchVodFragment.newInstance(it, vodProviders)
       })
       vp.adapter?.notifyDataSetChanged()
     }
@@ -153,11 +142,7 @@ class SearchActivity : BaseActivity() {
         if (isBlank) {
           Log.d(TAG, "onSearchChanged: $newText")
           scope {
-            binding.suggestRv.setDifferModels(
-              querySuggests().also {
-                Log.d(TAG, "suggests: $it")
-              }
-            )
+            binding.suggestRv.setDifferModels(querySuggests())
           }
         } else {
           querySearchIndex()
@@ -166,7 +151,7 @@ class SearchActivity : BaseActivity() {
       }
 
       override fun onQueryTextSubmit(query: String): Boolean {
-        if (fragments.isEmpty()) {
+        if (fragments.size <= 1) {
           return false
         }
         val text = query.trim()
@@ -174,21 +159,9 @@ class SearchActivity : BaseActivity() {
           scope(Dispatchers.Default) {
             SearchSuggest(text).saveOrUpdate("name = ?", text)
           }
+          hideSoftInputMethod()
           Log.d(TAG, "search: $text")
-          inputManager.hideSoftInputFromWindow(
-            binding.editSearch.windowToken,
-            InputMethodManager.HIDE_NOT_ALWAYS
-          )
-          binding.editSearch.clearFocus()
-          fragments.forEachIndexed { index, fragment ->
-            if (fragment is SearchFragment) {
-              Log.d(TAG, "index: $index, keyword: $query")
-              fragment.keyword = query
-              if (index == vp.currentItem) {
-                fragment.refresh()
-              }
-            }
-          }
+          notifyCurrentFragmentSearch(fragments, text)
           return true
         }
         return false
@@ -196,17 +169,57 @@ class SearchActivity : BaseActivity() {
     })
   }
 
+  /**
+   * 通知当前 fragment 进行搜索
+   */
+  private fun notifyCurrentFragmentSearch(fragments: List<SearchFragment>, keyword: String) {
+    fragments.forEachIndexed { index, searchFragment ->
+      searchFragment.keyword = keyword
+      if (index == binding.searchVp.currentItem) {
+        searchFragment.search()
+      }
+    }
+  }
+
+  /**
+   * 查询搜索所需的搜索索引
+   */
   private fun querySearchIndex() {
     mHandler.removeCallbacks(searchIndexRunnable)
     mHandler.postDelayed(searchIndexRunnable, 300)
   }
 
+  /**
+   * 搜索索引运行的任务
+   */
   private val searchIndexRunnable = Runnable {
+    // 发起网络请求从后台获取搜索索引
     scope {
       binding.indexRv.setDifferModels(Get<List<String>>(Api.VOD_SEARCH_INDEX) {
         setQuery("keyword", binding.editSearch.query.toString())
       }.await())
     }
+  }
+
+  /**
+   * 查询历史的搜索建议
+   */
+  private suspend fun querySuggests() = suspendCoroutine {
+    it.resume(
+      LitePal.limit(100)
+        .order("updateAt desc").find<SearchSuggest>()
+    )
+  }
+
+  /**
+   * 隐藏软件输入法并让搜索框失焦
+   */
+  private fun hideSoftInputMethod() {
+    inputManager.hideSoftInputFromWindow(
+      binding.editSearch.windowToken,
+      InputMethodManager.HIDE_NOT_ALWAYS
+    )
+    binding.editSearch.clearFocus()
   }
 
   override fun onDestroy() {
@@ -223,10 +236,5 @@ class SearchActivity : BaseActivity() {
     override fun getItemCount() = fragments.size
 
     override fun createFragment(position: Int) = fragments[position]
-  }
-
-  private suspend fun querySuggests() = withDefault {
-    LitePal.limit(100)
-      .order("updateAt desc").find<SearchSuggest>()
   }
 }

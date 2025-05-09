@@ -69,6 +69,8 @@
 
         <activity android:name=".ui.activity.FeedbackActivity" android:label="@string/feedback" />
 
+        <activity android:name=".ui.activity.ParseVideoPlayerActivity" />
+
     </application>
 
 </manifest>

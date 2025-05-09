@@ -12,7 +12,6 @@ import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import com.danikula.videocache.M3U8ProxyCache
 import com.danikula.videocache.parser.Playlist
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
@@ -30,8 +29,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.uaoanlao.tv.Screen
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import org.litepal.LitePal
@@ -39,8 +36,6 @@ import org.litepal.extension.deleteAll
 import org.litepal.extension.findFirst
 import xyz.jdynb.dymovies.DyMoviesApplication
 import xyz.jdynb.dymovies.R
-import xyz.jdynb.dymovies.ui.activity.DownloadActivity
-import xyz.jdynb.dymovies.ui.activity.VideoPlayActivity
 import xyz.jdynb.dymovies.config.Api
 import xyz.jdynb.dymovies.config.RequestConfig
 import xyz.jdynb.dymovies.config.SPConfig
@@ -59,6 +54,8 @@ import xyz.jdynb.dymovies.model.vod.VodParseUrl
 import xyz.jdynb.dymovies.model.vod.VodProvider
 import xyz.jdynb.dymovies.model.vod.VodSourceVideo
 import xyz.jdynb.dymovies.model.vod.VodVideo
+import xyz.jdynb.dymovies.ui.activity.DownloadActivity
+import xyz.jdynb.dymovies.ui.activity.VideoPlayActivity
 import xyz.jdynb.dymovies.utils.DanmakuUtils
 import xyz.jdynb.dymovies.utils.SpUtils.getRequired
 import xyz.jdynb.dymovies.utils.fitNavigationBar
@@ -67,9 +64,6 @@ import xyz.jdynb.dymovies.utils.startActivity
 import xyz.jdynb.dymovies.view.player.DongYuPlayer
 import xyz.jdynb.dymovies.view.player.base.BasePlayer
 import xyz.jdynb.dymovies.view.player.base.PlayerStateListener
-import java.io.File
-import java.io.FileOutputStream
-import java.io.FileWriter
 
 /**
  * 影片详情 fragment
@@ -169,7 +163,7 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
         /**
          * 收藏信息
          */
-        val favoriteResult = async(Dispatchers.Default) {
+        val favoriteResult = async {
           LitePal.where("detailId = ?", id.toString()).findFirst<VodFavorite>()
         }
 
@@ -189,11 +183,11 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
   }
 
   private fun init() {
-    val filterAd = SPConfig.AD_FILTER.getRequired<Boolean>(true)
+    /*val filterAd = SPConfig.AD_FILTER.getRequired<Boolean>(true)
     M3U8ProxyCache.adFilter = filterAd
     if (filterAd) {
       player.showToast("广告过滤已开启，无法播放请设置中关闭")
-    }
+    }*/
   }
 
   /**
@@ -538,16 +532,6 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
         getVideoUrl(url, detailId)
       } else {
         if (!videoProxy.realUrl.isNullOrEmpty()) {
-          /*if (videoProxy.realUrl.startsWith("http")) {
-            videoProxy.realUrl
-          } else {
-            val file = File(videoProxy.realUrl)
-            if (!file.exists()) {
-              getVideoUrl(url, detailId)
-            } else {
-              videoProxy.realUrl
-            }
-          }*/
           videoProxy.realUrl
         } else {
           videoProxy.url
@@ -567,33 +551,6 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
       if (uri.endsWith(".m3u8")) {
         val baseUrl = url.substring(0, url.lastIndexOf('/') + 1)
         val playUrl = baseUrl + uri
-        /*val m3u8Content = Get<String>(playUrl).await()
-        val file = File(requireContext().cacheDir, "m3u8s")
-        if (!file.exists()) {
-          file.mkdir()
-        }
-        val regex = "(\\d+\\.ts$)".toRegex()
-        val targetFile = File(file, System.currentTimeMillis().toString() + ".m3u8")
-        FileWriter(targetFile).use { fw ->
-          var beforeNum = -1
-          m3u8Content.lines().forEach { line ->
-            if (line.endsWith(".ts")) {
-              val matchResult = regex.find(line)
-              if (matchResult == null) {
-                fw.write(line)
-              } else {
-                val num = matchResult.destructured.component1().toInt()
-                if (num - beforeNum == 1 || beforeNum == -1) {
-                  beforeNum = num
-                  fw.write(line)
-                }
-              }
-            } else {
-              fw.write(line)
-            }
-          }
-        }
-        playUrl = targetFile.absolutePath*/
         VideoProxy(detailId, url, playUrl).save()
         return@let playUrl
       }

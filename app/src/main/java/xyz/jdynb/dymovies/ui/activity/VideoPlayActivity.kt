@@ -6,7 +6,6 @@ import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
 import androidx.core.os.bundleOf
-import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -58,7 +57,6 @@ class VideoPlayActivity : BaseActivity(), ServiceConnection {
 
     fitDanmaku()
 
-    WindowCompat.setDecorFitsSystemWindows(window, false)
     bindService(Intent(this, DownloadService::class.java), this, BIND_AUTO_CREATE)
     binding = DataBindingUtil.setContentView(this, R.layout.activity_video_play)
 
