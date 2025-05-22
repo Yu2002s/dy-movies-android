@@ -5,9 +5,9 @@ package xyz.jdynb.dymovies.config
  */
 object Api {
   // http://192.168.31.82
-  val BASE_URL = "http://dyys.jdynb.xyz"
-  // val BASE_URL = "http://192.168.31.82"
-  // val BASE_URL = "http://192.168.110.48"
+  const val BASE_URL = "http://dyys.jdynb.xyz"
+  // /val BASE_URL = "http://192.168.31.82"
+  // const val BASE_URL = "http://192.168.0.104"
   /**
    * 影片相关接口
    */

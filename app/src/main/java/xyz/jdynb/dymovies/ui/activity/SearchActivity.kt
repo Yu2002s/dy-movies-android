@@ -28,13 +28,17 @@ import org.litepal.extension.find
 import xyz.jdynb.dymovies.R
 import xyz.jdynb.dymovies.base.BaseActivity
 import xyz.jdynb.dymovies.config.Api
+import xyz.jdynb.dymovies.config.SPConfig
 import xyz.jdynb.dymovies.databinding.ActivitySearchBinding
 import xyz.jdynb.dymovies.databinding.ItemListSuggestBinding
 import xyz.jdynb.dymovies.model.search.SearchSuggest
 import xyz.jdynb.dymovies.model.vod.VodProvider
 import xyz.jdynb.dymovies.model.vod.VodType
 import xyz.jdynb.dymovies.ui.fragment.search.SearchFragment
+import xyz.jdynb.dymovies.ui.fragment.search.SearchParseFragment
 import xyz.jdynb.dymovies.ui.fragment.search.SearchVodFragment
+import xyz.jdynb.dymovies.utils.SpUtils.getRequired
+import xyz.jdynb.dymovies.utils.SpUtils.put
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -70,10 +74,13 @@ class SearchActivity : BaseActivity() {
       binding.editSearch.requestFocus()
     }
 
+    var showSearchTips = SPConfig.SHOW_SEARCH_TIPS.getRequired(true)
+
     binding.suggestRv.setup {
       addType<SearchSuggest>(R.layout.item_list_suggest)
 
       R.id.chip.onClick {
+        Log.d(TAG, "query: ${getModel<SearchSuggest>().name}")
         binding.editSearch.setQuery(getModel<SearchSuggest>().name, true)
       }
 
@@ -99,8 +106,8 @@ class SearchActivity : BaseActivity() {
     val tab = binding.searchTab
     val vp = binding.searchVp
 
-    val fragments = mutableListOf<SearchFragment>(/*SearchParseFragment()*/)
-    val types = mutableListOf(/*VodType(name = "解析"), */VodType(name = "全部"))
+    val fragments = mutableListOf<SearchFragment>()
+    val types = mutableListOf(VodType(name = "全部"))
 
     scopeNetLife {
       binding.suggestRv.models = querySuggests()
@@ -115,6 +122,8 @@ class SearchActivity : BaseActivity() {
       fragments.addAll(result.map {
         SearchVodFragment.newInstance(it, vodProviders)
       })
+      types.add(VodType(name = "解析"))
+      fragments.add(SearchParseFragment())
       vp.adapter?.notifyDataSetChanged()
     }
 
@@ -126,10 +135,12 @@ class SearchActivity : BaseActivity() {
 
     binding.editSearch.setOnQueryTextFocusChangeListener { v, hasFocus ->
       val isEmpty = (v as SearchView).query.isEmpty()
+      Log.d(TAG, "focused: $hasFocus, empty: $isEmpty")
       binding.suggestRv.isVisible = isEmpty
       binding.searchVp.isVisible = !hasFocus && !isEmpty
       binding.searchTab.isVisible = !hasFocus && !isEmpty
-      binding.indexRv.isVisible = hasFocus
+      binding.indexRv.isVisible = hasFocus && !isEmpty
+      binding.tipsCard.isVisible = showSearchTips && binding.searchVp.isVisible
     }
 
     binding.editSearch.setOnQueryTextListener(object : OnQueryTextListener {
@@ -151,6 +162,7 @@ class SearchActivity : BaseActivity() {
       }
 
       override fun onQueryTextSubmit(query: String): Boolean {
+        Log.d(TAG, "onQueryTextSubmit: $query")
         if (fragments.size <= 1) {
           return false
         }
@@ -167,6 +179,12 @@ class SearchActivity : BaseActivity() {
         return false
       }
     })
+
+    binding.tipsCard.setOnClickListener {
+      it.isVisible = false
+      showSearchTips = false
+      SPConfig.SHOW_SEARCH_TIPS.put(false)
+    }
   }
 
   /**

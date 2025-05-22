@@ -59,6 +59,10 @@ class SearchParseFragment : SearchFragment() {
         ParseVideoPlayerActivity.play(getModel<DoubanSubjectItem>().targetId)
       }
     }
+
+    /*if (keyword.isNotBlank()) {
+      search()
+    }*/
   }
 
   override fun search() {

@@ -114,8 +114,29 @@ class SPConfig {
          */
         const val USER_EMAIL = "user_email"
 
+        /**
+         * 广告过滤（弃用）
+         */
         const val AD_FILTER = "ad_filter"
 
+        /**
+         * 下载路径
+         */
         const val DOWNLOAD_PATH = "download_path"
+
+        /**
+         * 视频缓存
+         */
+        const val VIDEO_CACHE = "video_cache"
+
+        /**
+         * 显示搜索提示
+         */
+        const val SHOW_SEARCH_TIPS = "show_search_tips"
+
+        /**
+         * IDM 包名
+         */
+        const val IDM_PACKAGE_NAME = "idm_package_name"
     }
 }

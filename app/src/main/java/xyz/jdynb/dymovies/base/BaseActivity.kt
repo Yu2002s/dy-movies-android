@@ -1,9 +1,9 @@
 package xyz.jdynb.dymovies.base
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -56,16 +56,6 @@ open class BaseActivity : AppCompatActivity(), ThemeObserver {
   }
 
   /**
-   * 对返回事件进行统一处理
-   */
-  override fun setSupportActionBar(toolbar: Toolbar?) {
-    super.setSupportActionBar(toolbar)
-    toolbar?.setNavigationOnClickListener {
-      finish()
-    }
-  }
-
-  /**
    * @return 返回true将自动对 recyclerview 进行底栏处理
    */
   protected open fun onInsetChanged(statusBarHeight: Int, navigationBarHeight: Int): Boolean {
@@ -97,4 +87,11 @@ open class BaseActivity : AppCompatActivity(), ThemeObserver {
     recreate()
   }
 
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    if (item.itemId == android.R.id.home) {
+      finish()
+      return true
+    }
+    return super.onOptionsItemSelected(item)
+  }
 }

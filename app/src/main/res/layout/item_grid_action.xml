@@ -7,37 +7,23 @@
             name="m"
             type="xyz.jdynb.dymovies.model.ui.Action" />
 
-        <import type="xyz.jdynb.dymovies.utils.BindingAdapters" />
+        <import type="xyz.jdynb.dymovies.utils.databinding.DataBindingComponent" />
     </data>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/item_action"
+        topDrawable="@{m.icon}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?selectableItemBackgroundBorderless"
         android:clickable="true"
+        android:drawablePadding="10dp"
         android:focusable="true"
-        android:foreground="?selectableItemBackground"
-        android:orientation="vertical"
-        android:padding="10dp">
-
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_gravity="center_horizontal"
-            android:contentDescription="@{m.name}"
-            android:src="@{m.icon}"
-            tools:src="@tools:sample/avatars" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:gravity="center_horizontal"
-            android:text="@{m.name}"
-            tools:text="@string/app_name" />
-
-    </LinearLayout>
+        android:gravity="center_horizontal"
+        android:text="@{m.name}"
+        tools:drawableTop="@tools:sample/avatars"
+        tools:text="@string/app_name" />
 
 </layout>
 

@@ -3,13 +3,15 @@ package xyz.jdynb.dymovies.ui.fragment.setting
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
+import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.drake.net.Get
 import com.drake.net.utils.scopeNetLife
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -18,13 +20,13 @@ import xyz.jdynb.dymovies.config.Api
 import xyz.jdynb.dymovies.config.AppConfig.DEV_HOME_URL
 import xyz.jdynb.dymovies.config.AppConfig.SPLIT_LANZOU_URL
 import xyz.jdynb.dymovies.config.SPConfig
-import xyz.jdynb.dymovies.databinding.LayoutHeaderBinding
 import xyz.jdynb.dymovies.model.user.User
 import xyz.jdynb.dymovies.ui.activity.DownloadActivity
 import xyz.jdynb.dymovies.ui.activity.LoginActivity
 import xyz.jdynb.dymovies.utils.SpUtils.get
 import xyz.jdynb.dymovies.utils.SpUtils.remove
 import xyz.jdynb.dymovies.utils.ThemeUtils
+import xyz.jdynb.dymovies.utils.fitNavigationBar
 import xyz.jdynb.dymovies.utils.startActivity
 
 class SettingFragment : PreferenceFragmentCompat() {
@@ -38,14 +40,18 @@ class SettingFragment : PreferenceFragmentCompat() {
     setPreferencesFromResource(R.xml.preference_setting, rootKey)
   }
 
+  override fun onCreateRecyclerView(
+    inflater: LayoutInflater,
+    parent: ViewGroup,
+    savedInstanceState: Bundle?
+  ): RecyclerView {
+    val recyclerView = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
+    recyclerView.fitNavigationBar()
+    return recyclerView
+  }
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-
-    val content = (view as LinearLayout)
-
-    val headerBinding = LayoutHeaderBinding.inflate(layoutInflater, content, false)
-    headerBinding.toolBar.title = "设置"
-    content.addView(headerBinding.root, 0)
 
     userInfoPreference = findPreference("userinfo")!!
     loginPreference = findPreference("login")!!

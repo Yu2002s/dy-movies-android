@@ -5,6 +5,7 @@ import com.drake.brv.reflect.copyType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import xyz.jdynb.dymovies.R
+import xyz.jdynb.dymovies.model.SystemNotify
 import xyz.jdynb.dymovies.model.ui.Action
 
 @Serializable
@@ -16,13 +17,17 @@ data class HomeVod(
     Action("history", "历史收藏", R.drawable.baseline_history_24),
     Action("feedback", "反馈建议", R.drawable.baseline_feedback_24)
   ),
-  val feeds: List<VodFeed> = listOf()
+  val feeds: List<VodFeed> = listOf(),
+  val notifyList: List<SystemNotify> = listOf(),
 ) {
 
   fun getData(): MutableList<Any> {
     val data = mutableListOf<Any>()
     if (banners.isNotEmpty()) {
       data.add(banners.copyType())
+    }
+    if (notifyList.isNotEmpty()) {
+      data.add(notifyList.copyType())
     }
     data.add(actions.copyType())
     if (feeds.isNotEmpty()) {

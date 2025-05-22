@@ -43,14 +43,21 @@
             app:switchTextOff="关闭小进度条"
             app:title="小进度条" />-->
 
-        <SwitchPreferenceCompat
+        <!--<SwitchPreferenceCompat
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="auto_switch_route"
             app:summary="解析视频失败时自动切换线路"
             app:switchTextOff="关闭"
             app:switchTextOn="开启"
-            app:title="自动切换解析" />
+            app:title="自动切换解析" />-->
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:iconSpaceReserved="false"
+            app:key="video_cache"
+            app:title="视频缓存"
+            app:summary="视频将自动进行缓存，非必要请不要关闭" />
 
     </PreferenceCategory>
 

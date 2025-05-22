@@ -8,6 +8,8 @@ import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.bumptech.glide.Glide
+import com.drake.brv.annotaion.DividerOrientation
+import com.drake.brv.utils.divider
 import java.util.concurrent.TimeUnit
 
 /**
@@ -70,4 +72,15 @@ class ThrottleClickListener(
       block(v)
     }
   }
+}
+
+fun RecyclerView.gridDivider(space: Int): RecyclerView {
+  divider {
+    startVisible = true
+    endVisible = true
+    includeVisible = true
+    orientation = DividerOrientation.GRID
+    setDivider(space, true)
+  }
+  return this
 }

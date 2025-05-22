@@ -12,7 +12,6 @@ import com.coolerfall.download.DownloadRequest;
 import com.coolerfall.download.OkHttpDownloader;
 import com.danikula.videocache.file.FileCache;
 import com.danikula.videocache.parser.Element;
-import com.danikula.videocache.parser.M3uConstants;
 import com.danikula.videocache.parser.Playlist;
 
 import org.slf4j.Logger;
@@ -20,22 +19,20 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.Socket;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class M3U8ProxyCache extends HttpProxyCache {
     private static final Logger LOG = LoggerFactory.getLogger("M3U8ProxyCache");
@@ -100,7 +97,8 @@ public class M3U8ProxyCache extends HttpProxyCache {
 
     public M3U8ProxyCache(Context context, HttpUrlSource source, FileCache cache) {
         super(source, cache);
-        m3u8Downloader = new DownloadManager.Builder().context(context).downloader(OkHttpDownloader.create()).build();
+        m3u8Downloader = new DownloadManager.Builder()
+                .context(context).downloader(OkHttpDownloader.create()).build();
 
         baseUrl = source.getUrl();
         int end = baseUrl.indexOf("?");
@@ -109,6 +107,8 @@ public class M3U8ProxyCache extends HttpProxyCache {
 
         end = baseUrl.lastIndexOf("/");
         baseUrl = baseUrl.substring(0, end + 1);
+
+        Log.d("jdy", "baseUrl: " + baseUrl);
 
         mDecryptInfo = new DecryptInfo(source.getKey(), 512);
     }
@@ -161,10 +161,11 @@ public class M3U8ProxyCache extends HttpProxyCache {
             String url;
             if (name.startsWith("http")) {
                 url = name;
+            } else if (name.startsWith("/")) {
+                url = baseUrl.substring(0, baseUrl.indexOf('/', 10)) + name;
             } else {
                 url = baseUrl + name;
             }
-            // Log.d("jdy", "downloadUrl: " + url);
             name = getTsRelativeName(pos, name);
 
             File file = new File(baseCachePath + File.separator + name);
@@ -196,74 +197,14 @@ public class M3U8ProxyCache extends HttpProxyCache {
             String line;
             //分行读取
             int index = 0;
-            /*int lineIndex = 0;
-            long beforeNum = -1;
-            boolean isAd = false;
-            boolean canFilter = true;
-            Pattern pattern = Pattern.compile("(\\d{3,})\\.ts$");
-            List<String> lines = new ArrayList<>();
-            List<M3U8AdRange> adRanges = new ArrayList<>();
-            M3U8AdRange m3U8AdRange = new M3U8AdRange(0);*/
             while ((line = buffreader.readLine()) != null) {
                 if (line.endsWith(".ts") || line.endsWith(".jpg")) {
-                    // 这里是ts文件
-                   /* Matcher matcher = pattern.matcher(line);
-                    if (canFilter && matcher.find()) {
-                        try {
-                            long num = Long.parseLong(matcher.group(1));
-                            *//*if (beforeNum == -1 && num > 1) {
-                                canFilter = false;
-                                Log.d("jdy", "disbaleFilter: num = " + num);
-                            }*//*
-                            if (beforeNum == -1 || num - beforeNum == 1) {
-                                // 正常的 ts 文件
-                                beforeNum = num;
-                            } else {
-                                m3U8AdRange.setEnd(lineIndex);
-                                // 可能是广告的 ts 文件
-                                if (m3U8AdRange.length() >= 6 && m3U8AdRange.length() <= 14) {
-                                    isAd = true;
-                                }
-                            }
-                        } catch (NumberFormatException ignored) {
-                        }
-                    } else {
-                        Log.d("jdy", "disableFilter: " + line);
-                        canFilter = false;
-                        beforeNum = -1;
-                    }*/
                     //ts文件
                     line = getTsRelativeName(index, line);
                     index++;
-                } /*else if (line.startsWith(M3uConstants.EXT_X_DISCONTINUITY)) {
-                    if (m3U8AdRange.getStart() > 0 && isAd) {
-                        m3U8AdRange.setEnd(lineIndex - 1);
-                        adRanges.add(m3U8AdRange);
-                        isAd = false;
-                    }
-                    m3U8AdRange = new M3U8AdRange(lineIndex);
-                }*/
-                // lines.add(line);
-                // lineIndex++;
+                }
                 fos.write((line + "\n").getBytes());
             }
-
-           /* Log.d("jdy", "ranges: " + adRanges);
-
-            int rangIndex = 0;
-
-            for (int i = 0; i < lines.size(); i++) {
-                if (!adRanges.isEmpty()) {
-                    M3U8AdRange range = adRanges.get(rangIndex);
-                    if (range.getStart() >= i && range.getEnd() <= i) {
-                        if (range.getEnd() == i) {
-                            rangIndex++;
-                        }
-                        continue;
-                    }
-                }
-                fos.write((lines.get(i) + "\n").getBytes());
-            }*/
 
             fos.flush();
             raw.renameTo(new File(raw.getParentFile(), raw.getName() + LOCAL_M3U8_SUFFIX));
@@ -306,6 +247,7 @@ public class M3U8ProxyCache extends HttpProxyCache {
             for (Element element : elements) {
                 // 使用相对名称作为key
                 name = getTsRelativeName(index, element.getURI().getPath());
+                // Log.d("jdy", "name: " + name);
                 m3U8ItemMap.put(name, new M3U8Item(element));
                 index++;
             }
@@ -363,9 +305,15 @@ public class M3U8ProxyCache extends HttpProxyCache {
     }
 
     private void responseWithoutCache(OutputStream out, GetRequest request, HttpUrlSource newSourceNoCache) throws ProxyCacheException, IOException {
+        String childPath;
+        if (request.uri.endsWith(".key")) {
+            childPath = request.uri.hashCode() + ".key";
+        } else {
+            childPath = request.uri;
+        }
         try {
             // 在返回从服务器直取文件数据时，同时将数据保存在本地
-            File local = new File(m3u8CacheDir.getAbsolutePath() + File.separator + request.uri + ".caching");
+            File local = new File(m3u8CacheDir.getAbsolutePath() + File.separator + childPath + ".caching");
             if (local.exists()) {
                 local.delete();
             }
@@ -389,7 +337,7 @@ public class M3U8ProxyCache extends HttpProxyCache {
             out.close();
 
             // 数据取完后，重命名为正式文件
-            local.renameTo(new File(m3u8CacheDir.getAbsolutePath() + File.separator + request.uri));
+            local.renameTo(new File(m3u8CacheDir.getAbsolutePath() + File.separator + childPath));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -415,19 +363,46 @@ public class M3U8ProxyCache extends HttpProxyCache {
     }
 
     protected void responseWithEncryptedCache(OutputStream out, GetRequest request) throws IOException {
-        String path = m3u8CacheDir.getAbsolutePath() + File.separator + request.uri;
+        String childPath;
+        if (request.uri.endsWith(".key")) {
+            childPath = request.uri.hashCode() + ".key";
+        } else {
+            childPath = request.uri;
+        }
+        String path = m3u8CacheDir.getAbsolutePath() + File.separator + childPath;
         File origin = new File(path);
-        File decrypted = new File(path + ".d");
+
+        FileWriter fw = new FileWriter(origin);
+
+        String url = baseUrl.substring(0, baseUrl.indexOf('/', 10) + 1) + request.uri;
+
+        HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(request.uri).openConnection();
+        httpURLConnection.setDoInput(true);
+        httpURLConnection.setReadTimeout(10 * 1000);
+        BufferedReader br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+        String key = br.readLine();
+        fw.write(key);
+        fw.close();
+        br.close();
+
+        /*File decrypted = new File(path + ".d");
+        Log.d("jdy", "decryptedPath: " + decrypted.getPath());
 
         waitFileExists(decrypted, 60);
 
-        decrypted.renameTo(origin);
+        decrypted.renameTo(origin);*/
 
         responseWithCache(out, request);
     }
 
     protected void responseWithCache(OutputStream out, GetRequest request) throws IOException {
-        FileInputStream fis = new FileInputStream(m3u8CacheDir.getAbsolutePath() + File.separator + request.uri);
+        String childPath;
+        if (request.uri.endsWith(".key")) {
+            childPath = request.uri.hashCode() + ".key";
+        } else {
+            childPath = request.uri;
+        }
+        FileInputStream fis = new FileInputStream(m3u8CacheDir.getAbsolutePath() + File.separator + childPath);
 
         byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         int readBytes;
@@ -470,92 +445,10 @@ public class M3U8ProxyCache extends HttpProxyCache {
             } else {
                 // Log.d("jdy", "进入 ! cache.isCompleted");
 
-                if (!adFilter) {
-                    byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-                    int readBytes, offset = 0;
-                    while ((readBytes = read(buffer, offset, buffer.length)) != -1) {
-                        offset += readBytes;
-                    }
-                } else {
-                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-                    byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
-                    int readBytes, offset = 0;
-                    while ((readBytes = read(buffer, offset, buffer.length)) != -1) {
-                        byteArrayOutputStream.write(buffer, 0, readBytes);
-                        offset += readBytes;
-                    }
-
-                    byteArrayOutputStream.close();
-
-                    String content = new String(byteArrayOutputStream.toByteArray(), Charset.defaultCharset());
-                    String[] lines = content.split("\n");
-                    FileOutputStream fos = new FileOutputStream(cache.file);
-
-                    int lineIndex = 0;
-                    long beforeNum = -1;
-                    boolean isAd = false;
-                    boolean canFilter = true;
-                    Pattern pattern = Pattern.compile("(\\d{3,})\\.ts$");
-                    List<M3U8AdRange> adRanges = new ArrayList<>();
-                    M3U8AdRange m3U8AdRange = new M3U8AdRange(0);
-
-                    for (String line : lines) {
-                        if (line.endsWith(".ts") || line.endsWith(".jpg")) {
-                            // 这里是ts文件
-                            Matcher matcher = pattern.matcher(line);
-                            if (canFilter && matcher.find()) {
-                                try {
-                                    long num = Long.parseLong(matcher.group(1));
-                                /*if (beforeNum == -1 && num > 1) {
-                                    canFilter = false;
-                                    Log.d("jdy", "disbaleFilter: num = " + num);
-                                }*/
-                                    if (beforeNum == -1 || num - beforeNum == 1) {
-                                        // 正常的 ts 文件
-                                        beforeNum = num;
-                                    } else {
-                                        m3U8AdRange.setEnd(lineIndex);
-                                        // 可能是广告的 ts 文件
-                                        if (m3U8AdRange.length() >= 6 && m3U8AdRange.length() <= 14) {
-                                            isAd = true;
-                                        }
-                                    }
-                                } catch (NumberFormatException ignored) {
-                                }
-                            } else {
-                                Log.d("jdy", "disableFilter: " + line);
-                                break;
-                            }
-                        } else if (line.startsWith(M3uConstants.EXT_X_DISCONTINUITY)) {
-                            if (m3U8AdRange.getStart() > 0 && isAd) {
-                                m3U8AdRange.setEnd(lineIndex - 1);
-                                adRanges.add(m3U8AdRange);
-                                isAd = false;
-                            }
-                            m3U8AdRange = new M3U8AdRange(lineIndex);
-                        }
-                        lineIndex++;
-                    }
-
-                    Log.d("jdy", "ranges: " + adRanges);
-
-                    int rangIndex = 0;
-
-                    for (int i = 0; i < lines.length; i++) {
-                        if (!adRanges.isEmpty()) {
-                            M3U8AdRange range = adRanges.get(rangIndex);
-                            if (range.getStart() >= i && range.getEnd() <= i) {
-                                if (range.getEnd() == i) {
-                                    rangIndex++;
-                                }
-                                continue;
-                            }
-                        }
-                        fos.write((lines[i] + "\n").getBytes());
-                    }
-
-                    fos.close();
+                byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+                int readBytes, offset = 0;
+                while ((readBytes = read(buffer, offset, buffer.length)) != -1) {
+                    offset += readBytes;
                 }
 
                 int tick = 60;
@@ -579,13 +472,29 @@ public class M3U8ProxyCache extends HttpProxyCache {
             if (item != null) {
                 mCurRequestPos = elements.indexOf(item.element);
                 url = item.element.getURI().toString();
+                // Log.d("jdy", "item: " + item.element);
             } else {
+                // 解密路径
                 url = uri;
             }
 
+            // Log.d("jdy", "beforeUrl: " + url);
+
+            boolean hasKey = false;
+
             // 计算ts文件在服务器的url， 相对路径的， 要加上base
-            if (!url.startsWith("http"))
-                url = baseUrl + url;
+            if (!url.startsWith("http")) {
+                if (url.endsWith(".key")) {
+                    hasKey = true;
+                    // TODO: 2025/5/15 这里得改一下，可能其他key的地址不是这样的
+                    url = baseUrl.substring(0, baseUrl.indexOf('/', 10) + 1) + url;
+                } else if (url.startsWith("/")) {
+                    url = baseUrl.substring(0, baseUrl.indexOf('/', 10)) + url;
+                } else {
+                    url = baseUrl + url;
+                }
+            }
+            Log.d("jdy", "url: " + url);
 
             HttpUrlSource newSourceNoCache = new HttpUrlSource(this.source, new SourceInfo(url, Integer.MIN_VALUE, ProxyCacheUtils.getSupposablyMime(uri)));
             String responseHeaders = newResponseHeaders(request, newSourceNoCache);
@@ -594,9 +503,10 @@ public class M3U8ProxyCache extends HttpProxyCache {
 
             scheduleCache();
 
-            if (!TextUtils.isEmpty(mDecryptInfo.key)) {
+            if (!TextUtils.isEmpty(mDecryptInfo.key) || hasKey) {
                 // 需解密，强制缓存并解密
-                responseWithEncryptedCache(out, request);
+                // responseWithEncryptedCache(out, request);
+                responseWithoutCache(out, request, newSourceNoCache);
             } else if (isUseCache(request)) {
                 // 本地已缓存， 从文件中读取数据返回
                 responseWithCache(out, request);

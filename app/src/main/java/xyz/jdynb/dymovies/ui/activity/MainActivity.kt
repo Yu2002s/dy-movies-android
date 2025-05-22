@@ -4,17 +4,16 @@ import android.Manifest
 import android.app.DownloadManager
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.net.toUri
-import androidx.core.os.EnvironmentCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.drake.net.Get
 import com.drake.net.utils.scopeNetLife
@@ -26,21 +25,24 @@ import xyz.jdynb.dymovies.base.BaseActivity
 import xyz.jdynb.dymovies.config.Api
 import xyz.jdynb.dymovies.databinding.ActivityMainBinding
 import xyz.jdynb.dymovies.download.DownloadService
+import xyz.jdynb.dymovies.model.app.Update
 import xyz.jdynb.dymovies.ui.fragment.home.HomeFragment
 import xyz.jdynb.dymovies.ui.fragment.live.LiveFragment
-import xyz.jdynb.dymovies.ui.fragment.setting.SettingFragment
-import xyz.jdynb.dymovies.model.app.Update
-import xyz.jdynb.dymovies.utils.showToast
+import xyz.jdynb.dymovies.ui.fragment.mine.MineFragment
+import xyz.jdynb.dymovies.utils.isDarkMode
 import kotlin.system.exitProcess
 
 class MainActivity : BaseActivity() {
 
   private lateinit var binding: ActivityMainBinding
 
+  private lateinit var insetController: WindowInsetsControllerCompat
+
   private val mOnPageChangeCallback = object : OnPageChangeCallback() {
     override fun onPageSelected(position: Int) {
       val menuItem = binding.bottomNav.menu.getItem(position)
       menuItem.isChecked = true
+      insetController.isAppearanceLightStatusBars = !isDarkMode && menuItem.itemId != R.id.nav_mine
     }
   }
 
@@ -56,10 +58,10 @@ class MainActivity : BaseActivity() {
     initViewPager()
     initBottomNav()
     checkPermissions()
-    checkUpdate()
   }
 
   private fun init() {
+    insetController = WindowCompat.getInsetsController(window, binding.root)
   }
 
   /**
@@ -71,7 +73,7 @@ class MainActivity : BaseActivity() {
         when (item.itemId) {
           R.id.nav_home -> 0
           R.id.nav_live -> 1
-          R.id.nav_setting -> 2
+          R.id.nav_mine -> 2
           else -> 0
         }, false
       )
@@ -85,7 +87,7 @@ class MainActivity : BaseActivity() {
   private fun initViewPager() {
     val vp = binding.vp
 
-    val fragments = listOf(HomeFragment::class, LiveFragment::class, SettingFragment::class)
+    val fragments = listOf(HomeFragment::class, LiveFragment::class, MineFragment::class)
 
     vp.apply {
       isUserInputEnabled = false
@@ -177,6 +179,11 @@ class MainActivity : BaseActivity() {
         .setCancelable(false)
         .show()
     }
+  }
+
+  override fun onStart() {
+    super.onStart()
+    checkUpdate()
   }
 
   override fun onDestroy() {

@@ -2,7 +2,6 @@ package com.danikula.videocache;
 
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * Stores source's info.
@@ -14,7 +13,7 @@ public class SourceInfo {
     public final String url;
     public final long length;
     public final String mime;
-    public final String key;
+    public String key;
     public final boolean m3u8;
 
     public SourceInfo(String url, long length, String mime) {

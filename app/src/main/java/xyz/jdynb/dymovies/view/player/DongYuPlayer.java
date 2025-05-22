@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -141,6 +142,11 @@ public class DongYuPlayer extends BasePlayer {
      */
     private OnVideoSkipChangeListener videoSkipChangeListener;
 
+    /**
+     * 换源点击事件监听
+     */
+    private OnClickListener switchSourceClickListener;
+
     private DanmakuView mDanmakuView;
 
     private DanmakuContext mDanmakuContext;
@@ -198,6 +204,10 @@ public class DongYuPlayer extends BasePlayer {
 
     public void setVideoSkipChangeListener(OnVideoSkipChangeListener videoSkipChangeListener) {
         this.videoSkipChangeListener = videoSkipChangeListener;
+    }
+
+    public void setSwitchSourceClickListener(OnClickListener clickListener) {
+        this.switchSourceClickListener = clickListener;
     }
 
     public DongYuPlayer(@NonNull Context context) {
@@ -1360,5 +1370,11 @@ public class DongYuPlayer extends BasePlayer {
 
     public void setEnableSkipVideoStart(boolean enableSkipVideoStart) {
         isEnableSkipVideoStart = enableSkipVideoStart;
+    }
+
+    @Override
+    protected void onSwitchSource(Button v) {
+        super.onSwitchSource(v);
+        switchSourceClickListener.onClick(v);
     }
 }

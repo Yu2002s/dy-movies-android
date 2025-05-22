@@ -7,9 +7,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
-import androidx.databinding.ObservableBoolean
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.drake.brv.utils.bindingAdapter
 import xyz.jdynb.dymovies.R
 import xyz.jdynb.dymovies.model.download.Download
 import xyz.jdynb.dymovies.utils.cache.ColorDrawableCache
@@ -118,5 +119,11 @@ object BindingAdapters {
       .placeholder(colorDrawable)
       .transition(fadeTransition)
       .into(view)
+  }
+
+  @JvmStatic
+  @BindingAdapter("models")
+  fun setModels(view: RecyclerView, models: List<Any>) {
+    view.bindingAdapter.models = models
   }
 }

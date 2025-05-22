@@ -51,6 +51,14 @@
             app:title="下载路径"
             app:useSimpleSummaryProvider="true" />
 
+        <EditTextPreference
+            app:icon="@drawable/baseline_downloading_24"
+            app:key="idm_package_name"
+            app:defaultValue="idm.internet.download.manager.plus"
+            app:title="IDM包名"
+            app:useSimpleSummaryProvider="true"
+            app:dialogMessage="请设置IDM+的App 包名，什么是包名？具体请百度如何查看App的包名，一般默认即可。" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

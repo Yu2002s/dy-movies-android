@@ -43,4 +43,5 @@
     <string name="download_status">%s %s %d%%</string>
 
     <string name="vod_latest">最近更新</string>
+    <string name="system_notify">系统通知</string>
 </resources>

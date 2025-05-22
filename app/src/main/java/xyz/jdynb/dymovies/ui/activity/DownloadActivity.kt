@@ -16,33 +16,27 @@ import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.MenuProvider
-import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import androidx.lifecycle.lifecycleScope
 import com.drake.brv.BindingAdapter
 import com.drake.brv.annotaion.AnimationType
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
-import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.drake.net.utils.scope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.litepal.LitePal
 import org.litepal.extension.find
 import xyz.jdynb.dymovies.R
 import xyz.jdynb.dymovies.base.BaseActivity
+import xyz.jdynb.dymovies.config.SPConfig
 import xyz.jdynb.dymovies.databinding.ActivityDownloadBinding
-import xyz.jdynb.dymovies.databinding.ItemListDownloadBinding
 import xyz.jdynb.dymovies.download.DownloadListener
 import xyz.jdynb.dymovies.download.DownloadService
 import xyz.jdynb.dymovies.model.download.Download
 import xyz.jdynb.dymovies.model.download.DownloadStatus
-import xyz.jdynb.dymovies.model.vod.VodDetail
-import xyz.jdynb.dymovies.utils.formatBytes
+import xyz.jdynb.dymovies.utils.SpUtils.getRequired
 import xyz.jdynb.dymovies.utils.showToast
-import java.util.Objects
 
 class DownloadActivity : BaseActivity(), ServiceConnection, DownloadListener, MenuProvider {
 
@@ -66,6 +60,9 @@ class DownloadActivity : BaseActivity(), ServiceConnection, DownloadListener, Me
     setSupportActionBar(binding.toolbar)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     addMenuProvider(this, this)
+
+    binding.savePath.text =
+      "下载保存在: %s".format(SPConfig.DOWNLOAD_PATH.getRequired("/内部储存/Download/DongYuMovies"))
 
     binding.rv.setup {
       setAnimation(AnimationType.SCALE)

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,7 +21,6 @@ import com.google.android.material.color.MaterialColors;
 
 import xyz.jdynb.dymovies.R;
 import xyz.jdynb.dymovies.config.SPConfig;
-import xyz.jdynb.dymovies.databinding.LayoutHeaderBinding;
 import xyz.jdynb.dymovies.ui.activity.SimpleVideoActivity;
 import xyz.jdynb.dymovies.ui.activity.VideoPlayActivity;
 import xyz.jdynb.dymovies.utils.TimeUtilsKt;
@@ -64,12 +62,12 @@ public class PlayerSettingFragment extends PreferenceFragmentCompat {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (player == null) {
+        /*if (player == null) {
             LinearLayout content = (LinearLayout) view;
             LayoutHeaderBinding headerBinding = LayoutHeaderBinding.inflate(getLayoutInflater(), content, false);
             headerBinding.toolBar.setTitle("播放设置");
             content.addView(headerBinding.getRoot(), 0);
-        }
+        }*/
 
         ViewCompat.setOnApplyWindowInsetsListener(view, new OnApplyWindowInsetsListener() {
             @NonNull

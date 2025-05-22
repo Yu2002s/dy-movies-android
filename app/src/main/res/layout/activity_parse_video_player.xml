@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <import type="xyz.jdynb.dymovies.utils.BindingAdapters" />
+
+        <variable
+            name="m"
+            type="xyz.jdynb.dymovies.model.vod.ParseVodDetail" />
+
+    </data>
 
     <LinearLayout
         android:orientation="vertical"
@@ -9,9 +20,9 @@
 
         <xyz.jdynb.dymovies.view.player.DongYuPlayer
             android:id="@+id/player"
+            tools:layout_height="250dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
 
         <com.drake.statelayout.StateLayout
             android:id="@+id/state"
@@ -19,10 +30,51 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/video_rv"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <xyz.jdynb.dymovies.view.RoundImageView
+                        app:radius="10"
+                        imageUrl="@{m.image}"
+                        tools:src="@tools:sample/avatars"
+                        android:id="@+id/vod_cover"
+                        android:layout_width="70dp"
+                        android:layout_height="100dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        tools:text="@string/app_name"
+                        android:layout_marginStart="10dp"
+                        android:text="@{m.name}"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                        android:id="@+id/vod_name"
+                        app:layout_constraintStart_toEndOf="@id/vod_cover"
+                        app:layout_constraintTop_toTopOf="@id/vod_cover"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/video_rv"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/vod_cover"
+                        app:spanCount="3" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.core.widget.NestedScrollView>
 
         </com.drake.statelayout.StateLayout>
 

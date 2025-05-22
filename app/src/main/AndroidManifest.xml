@@ -50,27 +50,42 @@
 
         <activity
             android:name=".ui.activity.VideoPlayActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:windowSoftInputMode="adjustPan" />
 
         <activity android:name=".ui.activity.DownloadActivity" />
 
         <service android:name=".download.DownloadService" />
 
-        <activity android:name=".ui.activity.SearchActivity" android:windowSoftInputMode="stateVisible" />
+        <activity
+            android:name=".ui.activity.SearchActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
 
-        <activity android:name=".ui.activity.VodHistoryActivity" android:label="@string/history_favorite" />
+        <activity
+            android:name=".ui.activity.VodHistoryActivity"
+            android:label="@string/history_favorite" />
 
-        <activity android:name=".ui.activity.LoginActivity" android:label="@string/login_sign" />
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:label="@string/login_sign" />
 
         <activity android:name=".ui.activity.CrashActivity" />
 
-        <activity android:name=".ui.activity.VodLatestActivity" android:label="@string/vod_latest" />
+        <activity
+            android:name=".ui.activity.VodLatestActivity"
+            android:label="@string/vod_latest" />
 
-        <activity android:name=".ui.activity.FeedbackActivity" android:label="@string/feedback" />
+        <activity
+            android:name=".ui.activity.FeedbackActivity"
+            android:label="@string/feedback" />
 
-        <activity android:name=".ui.activity.ParseVideoPlayerActivity" />
+        <activity
+            android:name=".ui.activity.ParseVideoPlayerActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode" />
 
+        <activity
+            android:name=".ui.activity.SettingActivity"
+            android:label="@string/nav_setting" />
     </application>
 
 </manifest>

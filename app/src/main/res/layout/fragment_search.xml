@@ -11,15 +11,23 @@
             android:layout_height="wrap_content">
         </xyz.jdynb.dymovies.view.fix.NestedScrollableHost>-->
 
-        <androidx.recyclerview.widget.RecyclerView
+        <xyz.jdynb.dymovies.view.fix.NestedScrollableHost
+            android:id="@+id/source_rv_wrap"
+            android:layout_width="0dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/source_rv"
-            android:orientation="horizontal"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/source_rv"
+                android:orientation="horizontal"
+                app:spanCount="2"
+                app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </xyz.jdynb.dymovies.view.fix.NestedScrollableHost>
 
         <!--<androidx.recyclerview.widget.RecyclerView
             android:id="@+id/type_rv"
@@ -29,7 +37,7 @@
             android:layout_height="wrap_content"/>-->
 
         <com.drake.brv.PageRefreshLayout
-            app:layout_constraintTop_toBottomOf="@id/source_rv"
+            app:layout_constraintTop_toBottomOf="@id/source_rv_wrap"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -54,7 +62,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginEnd="30dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="100dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 

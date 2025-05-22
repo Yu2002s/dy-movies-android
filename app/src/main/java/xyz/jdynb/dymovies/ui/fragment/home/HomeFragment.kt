@@ -13,11 +13,11 @@ import com.drake.net.utils.scope
 import com.google.android.material.tabs.TabLayoutMediator
 import org.litepal.LitePal
 import org.litepal.extension.deleteAll
-import xyz.jdynb.dymovies.ui.activity.SearchActivity
 import xyz.jdynb.dymovies.config.Api
 import xyz.jdynb.dymovies.databinding.FragmentHomeBinding
 import xyz.jdynb.dymovies.model.vod.VideoProxy
 import xyz.jdynb.dymovies.model.vod.VodType
+import xyz.jdynb.dymovies.ui.activity.SearchActivity
 import xyz.jdynb.dymovies.utils.startActivity
 
 class HomeFragment : Fragment() {

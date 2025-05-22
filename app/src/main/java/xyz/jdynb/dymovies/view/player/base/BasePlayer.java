@@ -26,10 +26,11 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.GravityInt;
@@ -65,6 +66,9 @@ public class BasePlayer extends FrameLayout implements PlayerTouchListener, Play
     private static final boolean LIGHT_STATUS_BAR = false;
     private static final int DEFAULT_STATUS_BAR_HEIGHT = 40;
 
+    /**
+     * 最大的缓冲大小（减少可以加快加载速度，加大可以避免频繁卡顿）
+     */
     private static final int MAX_BUFFING_SIZE = 400000;
 
     private static final int CONTROLLER_SHOW_TIME = 5000;
@@ -439,18 +443,56 @@ public class BasePlayer extends FrameLayout implements PlayerTouchListener, Play
         // 进度改变时回调
     }
 
+    private View findTargetChild(ViewGroup parent, MotionEvent event, View targetChild) {
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+
+        // 遍历所有子View，检查触摸点是否在目标子View上
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            View child = parent.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                return findTargetChild((ViewGroup) child, event, targetChild);
+            }
+            if (child.getVisibility() == VISIBLE &&
+                    isPointInView(child, x, y)) {
+                // 这里可以添加条件判断是否是特定的子View
+                if (child == targetChild) { // targetChild是你想响应的特定子View
+                    return child;
+                }
+            }
+        }
+        return null;
+    }
+
+    private boolean isPointInView(View view, int x, int y) {
+        int[] location = new int[2];
+        view.getLocationOnScreen(location);
+        int viewX = location[0];
+        int viewY = location[1];
+
+        return (x >= viewX && x < (viewX + view.getWidth()) &&
+                y >= viewY && y < (viewY + view.getHeight()));
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             performClick();
         }
+        Log.d(TAG, "onTouchEvent: " + event.getAction());
         return playerTouchHelp.bind(event);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // Log.i(TAG, "onInterceptTouchEvent: " + ev.getAction());
-        if (ev.getAction() == MotionEvent.ACTION_UP) {
+        Log.i(TAG, "onInterceptTouchEvent: " + ev.getAction());
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View targetChild = findTargetChild(this, ev, binding.switchSource);
+            if (targetChild != null) {
+                onSwitchSource((Button) targetChild);
+                return true;
+            }
+        } else if (ev.getAction() == MotionEvent.ACTION_UP) {
             // 重新计算时长
             if (isShowController) {
                 showController();
@@ -1002,6 +1044,7 @@ public class BasePlayer extends FrameLayout implements PlayerTouchListener, Play
         binding.progressBar.setVisibility(VISIBLE);
         binding.tvNetworkSpeed.setVisibility(VISIBLE);
         binding.loadingTip.setVisibility(VISIBLE);
+        binding.switchSource.setVisibility(VISIBLE);
 
         if (networkSpeedRunnable == null) {
             networkSpeedRunnable = new Runnable() {
@@ -1027,6 +1070,7 @@ public class BasePlayer extends FrameLayout implements PlayerTouchListener, Play
         binding.progressBar.setVisibility(INVISIBLE);
         binding.tvNetworkSpeed.setVisibility(INVISIBLE);
         binding.loadingTip.setVisibility(INVISIBLE);
+        binding.switchSource.setVisibility(INVISIBLE);
         if (networkSpeedRunnable != null) {
             mHandler.removeCallbacks(networkSpeedRunnable);
             networkSpeedRunnable = null;
@@ -1072,9 +1116,9 @@ public class BasePlayer extends FrameLayout implements PlayerTouchListener, Play
     }
 
     private void initViewListener() {
-        /*binding.btnRefresh.setOnClickListener(v -> {
-            refresh();
-            UtilsKt.showToast("正在尝试手动刷新...", Toast.LENGTH_SHORT);
+        /*binding.switchSource.setOnClickListener(v -> {
+            // 点击换源
+            onSwitchSource((Button) v);
         });*/
     }
 
@@ -1420,6 +1464,13 @@ public class BasePlayer extends FrameLayout implements PlayerTouchListener, Play
     @Nullable
     public String getPlayUrl() {
         return ijkMediaPlayer != null ? ijkMediaPlayer.getDataSource() : null;
+    }
+
+    /**
+     * 换源时触发
+     */
+    protected void onSwitchSource(Button v) {
+        Log.i(TAG, "switchSource --->");
     }
 
     @Override

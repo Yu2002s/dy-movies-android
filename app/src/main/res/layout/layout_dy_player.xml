@@ -9,6 +9,7 @@
         android:layout_gravity="center" />
 
     <LinearLayout
+        android:id="@+id/center_mask"
         android:gravity="center_horizontal"
         android:layout_gravity="center"
         android:orientation="vertical"
@@ -45,12 +46,13 @@
             android:layout_height="wrap_content"
             tools:ignore="SmallSp" />
 
-        <!--<Button
+        <Button
+            style="?attr/buttonBarButtonStyle"
             android:translationZ="99dp"
-            android:id="@+id/btn_refresh"
-            android:text="刷新"
+            android:id="@+id/switch_source"
+            android:text="换源(卡顿点我)"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>-->
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
