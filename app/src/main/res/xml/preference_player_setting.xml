@@ -53,11 +53,12 @@
             app:title="自动切换解析" />-->
 
         <SwitchPreferenceCompat
+            app:enabled="false"
             app:defaultValue="true"
             app:iconSpaceReserved="false"
             app:key="video_cache"
             app:title="视频缓存"
-            app:summary="视频将自动进行缓存，非必要请不要关闭" />
+            app:summary="视频将自动进行缓存(功能不稳定，已废弃)" />
 
     </PreferenceCategory>
 

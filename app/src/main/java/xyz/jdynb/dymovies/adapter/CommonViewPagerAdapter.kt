@@ -1,4 +1,4 @@
-package xyz.jdynb.dymovies.adapter;
+package xyz.jdynb.dymovies.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

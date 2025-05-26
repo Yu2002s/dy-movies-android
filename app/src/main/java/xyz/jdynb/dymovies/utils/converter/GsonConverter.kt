@@ -1,4 +1,4 @@
-package xyz.jdynb.dymovies.utils.converter;
+package xyz.jdynb.dymovies.utils.converter
 
 import com.drake.net.convert.JSONConvert
 import org.json.JSONObject

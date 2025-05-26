@@ -19,8 +19,8 @@ class LoginActivity : BaseActivity() {
   private lateinit var binding: ActivityLoginBinding
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
     binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+    super.onCreate(savedInstanceState)
     setSupportActionBar(binding.toolbar)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
 

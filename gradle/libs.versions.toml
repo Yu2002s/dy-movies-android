@@ -17,11 +17,13 @@ glide = "4.16.0"
 banner = "2.2.3"
 player = "v10.0.0"
 litepal = "3.2.3"
+supportAnnotations = "28.0.0"
 uaoanDLNA = "1.0"
 preference = "1.2.1"
 flexbox = "3.0.0"
 kotlinxCoroutines = "1.9.0"
 refresh = "2.0.5"
+annotationJvm = "1.9.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +43,7 @@ banner = { group = "io.github.youth5201314", name = "banner", version.ref = "ban
 player = { group = "com.github.CarGuo.GSYVideoPlayer", name = "gsyvideoplayer-java", version.ref = "player" }
 player-ext = { group = "com.github.CarGuo.GSYVideoPlayer", name = "gsyvideoplayer-ex_so", version.ref = "player" }
 litepal = { group = "org.litepal.guolindev", name = "core", version.ref = "litepal" }
+support-annotations = { module = "com.android.support:support-annotations", version.ref = "supportAnnotations" }
 uaoan-dlna = { group = "com.github.uaoan", name = "UaoanDLNA", version.ref = "uaoanDLNA" }
 preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
 flexbox = { group = "com.google.android.flexbox", name = "flexbox", version.ref = "flexbox" }
@@ -48,6 +51,7 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 refresh-ball = { group = "io.github.scwang90", name = "refresh-footer-ball", version.ref="refresh" }
 refresh-radar = { group = "io.github.scwang90", name = "refresh-header-radar", version.ref="refresh" }
+androidx-annotation-jvm = { group = "androidx.annotation", name = "annotation-jvm", version.ref = "annotationJvm" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

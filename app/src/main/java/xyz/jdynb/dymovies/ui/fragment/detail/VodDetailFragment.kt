@@ -16,7 +16,6 @@ import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import com.danikula.videocache.parser.Playlist
 import com.drake.brv.annotaion.DividerOrientation
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.dividerSpace
@@ -38,8 +37,8 @@ import kotlinx.coroutines.coroutineScope
 import org.litepal.LitePal
 import org.litepal.extension.deleteAll
 import org.litepal.extension.findFirst
-import xyz.jdynb.dymovies.DyMoviesApplication
 import xyz.jdynb.dymovies.R
+import xyz.jdynb.dymovies.base.BaseActivity
 import xyz.jdynb.dymovies.config.Api
 import xyz.jdynb.dymovies.config.RequestConfig
 import xyz.jdynb.dymovies.config.SPConfig
@@ -64,6 +63,7 @@ import xyz.jdynb.dymovies.ui.activity.VideoPlayActivity
 import xyz.jdynb.dymovies.utils.DanmakuUtils
 import xyz.jdynb.dymovies.utils.SpUtils.getRequired
 import xyz.jdynb.dymovies.utils.fitNavigationBar
+import xyz.jdynb.dymovies.utils.parser.Playlist
 import xyz.jdynb.dymovies.utils.showToast
 import xyz.jdynb.dymovies.utils.startActivity
 import xyz.jdynb.dymovies.view.player.DongYuPlayer
@@ -179,6 +179,9 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
           LitePal.where("detailId = ?", id.toString()).findFirst<VodFavorite>()
         }
 
+        /**
+         * 弹幕信息
+         */
         val danmakuUrls = async {
           try {
             DanmakuUtils.getDanmakuUrls(vodDetail.name, vodDetail.year)
@@ -480,6 +483,7 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
     // 保持同步切换
     if (currentSelectedFlag == vodVideo.flag) {
       binding.sectionRv.bindingAdapter.setChecked(position, true)
+      binding.sectionRv.scrollToPosition(position)
     }
     vodDetail.vid = vodVideo.vid
     // 只有切换选集的时候才进行重置进度为0
@@ -595,11 +599,11 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
 
     Log.d(TAG, "playUrl: $playUrl")
 
-    val enableCache = SPConfig.VIDEO_CACHE.getRequired(true)
+    // val enableCache = SPConfig.VIDEO_CACHE.getRequired(true)
 
-    if (enableCache) {
+    /*if (enableCache) {
       return DyMoviesApplication.getProxy().getProxyUrl(playUrl)
-    }
+    }*/
     return playUrl
   }
 
@@ -609,7 +613,6 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
   private suspend fun getVideoUrl(url: String, detailId: Int): String {
     val result = coroutineScope { Get<String>(url).await() }
     val playlist = Playlist.parse(result)
-    Log.d(TAG, "m3u8Elements: ${playlist.elements}")
     if (playlist.elements.size > 10) {
       return url
     }
@@ -662,6 +665,8 @@ class VodDetailFragment : Fragment(), PlayerStateListener, OnVideoChangeListener
           }
           .setNegativeButton("取消", null)
           .show()
+
+        (requireActivity() as BaseActivity).checkPermissions()
       }
     }.models = vodVideos
   }

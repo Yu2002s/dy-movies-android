@@ -399,6 +399,7 @@ public class DongYuPlayer extends BasePlayer {
     public DongYuPlayer setDanmakus(List<String> danmakus) {
         mDanmakuUrlList.clear();
         mDanmakuUrlList.addAll(danmakus);
+        Log.d(TAG, "setDanmakus: " + danmakus);
         bottomBinding.danmakuVisible.setVisibility(!mDanmakuUrlList.isEmpty() ? VISIBLE : GONE);
         return this;
     }

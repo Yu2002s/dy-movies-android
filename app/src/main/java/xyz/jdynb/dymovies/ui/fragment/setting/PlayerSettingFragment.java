@@ -16,7 +16,6 @@ import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreferenceCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.danikula.videocache.M3U8ProxyCache;
 import com.google.android.material.color.MaterialColors;
 
 import xyz.jdynb.dymovies.R;
@@ -167,7 +166,7 @@ public class PlayerSettingFragment extends PreferenceFragmentCompat {
         SwitchPreferenceCompat adFilter = findPreference(SPConfig.AD_FILTER);
         assert adFilter != null;
         adFilter.setOnPreferenceChangeListener((preference, newValue) -> {
-            M3U8ProxyCache.adFilter = (boolean) newValue;
+            //M3U8ProxyCache.adFilter = (boolean) newValue;
             return true;
         });
     }

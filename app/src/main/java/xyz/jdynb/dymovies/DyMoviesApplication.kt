@@ -1,4 +1,4 @@
-package xyz.jdynb.dymovies;
+package xyz.jdynb.dymovies
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -7,7 +7,6 @@ import android.content.pm.PackageManager
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.pm.PackageInfoCompat
-import com.danikula.videocache.HttpProxyCacheServer
 import com.drake.brv.utils.BRV
 import com.drake.net.NetConfig
 import com.drake.net.exception.HttpResponseException
@@ -37,7 +36,6 @@ import xyz.jdynb.dymovies.utils.converter.SerializationConverter
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-
 class DyMoviesApplication : Application() {
 
   companion object {
@@ -61,17 +59,17 @@ class DyMoviesApplication : Application() {
       return obj.javaClass.getSimpleName()
     }
 
-    @JvmStatic
+    /*@JvmStatic
     fun getProxy(): HttpProxyCacheServer {
       val application = context as DyMoviesApplication
       if (application.proxy == null) {
         application.proxy = application.newProxy()
       }
       return application.proxy!!
-    }
+    }*/
   }
 
-  private var proxy: HttpProxyCacheServer? = null
+  // private var proxy: HttpProxyCacheServer? = null
 
   init {
     // 这里对App环境进行检测，如果App签名不同，则不允许成功运行
@@ -186,10 +184,10 @@ class DyMoviesApplication : Application() {
     }
   }
 
-  private fun newProxy(): HttpProxyCacheServer {
-    return HttpProxyCacheServer.Builder(this)
-      .cacheDirectory(videoCacheDirectory)
-      .maxCacheSize(2 * 1024 * 1024 * 1024L)
-      .build()
-  }
+  /* private fun newProxy(): HttpProxyCacheServer {
+     return HttpProxyCacheServer.Builder(this)
+       .cacheDirectory(videoCacheDirectory)
+       .maxCacheSize(2 * 1024 * 1024 * 1024L)
+       .build()
+   }*/
 }

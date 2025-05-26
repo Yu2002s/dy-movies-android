@@ -37,7 +37,10 @@ object DanmakuUtils {
       }
       val templateCode = template.template
       return@coroutineScope when (templateCode) {
-        101, 102 -> albumInfo!!.videos.map { DAN_MA_KU_API + it.pageUrl }
+        101, 102 -> {
+          Log.d(TAG, "template: 101,102: ${albumInfo?.videos}")
+          albumInfo!!.videos.map { DAN_MA_KU_API + it.pageUrl }
+        }
         103 -> {
           listOf(DAN_MA_KU_API + Get<IQiYiVideoInfo>(Api.IQIYI_VIDEO_INFO) {
             converter = SerializationConverter("A00000")

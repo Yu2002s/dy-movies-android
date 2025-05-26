@@ -1,4 +1,4 @@
-package xyz.jdynb.dymovies.ui.fragment.home;
+package xyz.jdynb.dymovies.ui.fragment.home
 
 import android.os.Bundle
 import android.os.Handler

@@ -104,7 +104,7 @@
                             android:id="@+id/tv_actions"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="操作"
+                            android:text="@string/tv_action"
                             android:textAppearance="?textAppearanceTitleMedium"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -147,7 +147,7 @@
 
                     <TextView
                         android:drawablePadding="10dp"
-                        android:text="点击下面选项可进行切换线路搜索"
+                        android:text="@string/tip_route"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:drawableEndCompat="@drawable/baseline_close_24"
@@ -177,6 +177,7 @@
                             tools:text="选集(lzm3u8)" />-->
 
                         <com.google.android.material.tabs.TabLayout
+
                             android:backgroundTint="@android:color/transparent"
                             app:tabMode="scrollable"
                             app:tabGravity="start"
@@ -233,7 +234,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             android:padding="16dp"
-                            android:text="视频为空，请切换"
+                            android:text="@string/empty_video"
                             visible="@{!detail.loadingVideos &amp;&amp; detail.videoCount == 0}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
@@ -257,7 +258,7 @@
                             android:id="@+id/tv_actors"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="演员"
+                            android:text="@string/tv_actor"
                             android:textAppearance="?textAppearanceTitleMedium"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />

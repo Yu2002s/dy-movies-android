@@ -44,4 +44,11 @@
 
     <string name="vod_latest">最近更新</string>
     <string name="system_notify">系统通知</string>
+    <string name="tv_action">操作</string>
+    <string name="tip_route">点击下面选项可进行切换线路搜索</string>
+    <string name="empty_video">视频为空，请切换</string>
+    <string name="tv_actor">演员</string>
+    <string name="hint_feedback_content">反馈/建议内容 为了更快的解决问题，请描述详细。</string>
+    <string name="hint_feedback_contact">联系方式(可不填，建议写上邮箱，方便开发则取得联系)</string>
+    <string name="btn_submit_feedback">提交反馈</string>
 </resources>

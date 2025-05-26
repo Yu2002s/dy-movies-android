@@ -5,9 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.drake.brv.annotaion.DividerOrientation
@@ -17,7 +14,6 @@ import com.drake.net.Get
 import com.drake.net.Post
 import com.drake.net.utils.scope
 import com.drake.net.utils.scopeDialog
-import kotlinx.coroutines.delay
 import xyz.jdynb.dymovies.R
 import xyz.jdynb.dymovies.config.Api
 import xyz.jdynb.dymovies.databinding.FragmentVodCommentBinding
@@ -56,7 +52,7 @@ class VodCommentFragment : Fragment() {
 
     binding.bottom.fitNavigationBar(defaultBottom = 20)
 
-    detailId = requireArguments().getInt("id");
+    detailId = requireArguments().getInt("id")
 
     binding.commentRv.dividerSpace(20, DividerOrientation.VERTICAL).setup {
       addType<VodComment>(R.layout.item_list_comment)

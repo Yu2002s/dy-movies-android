@@ -5,5 +5,4 @@ import androidx.fragment.app.Fragment
 /**
  * Fragment 基类
  */
-open class BaseFragment: Fragment() {
-}
+open class BaseFragment : Fragment()

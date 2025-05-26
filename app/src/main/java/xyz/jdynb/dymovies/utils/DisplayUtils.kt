@@ -1,4 +1,4 @@
-package xyz.jdynb.dymovies.utils;
+package xyz.jdynb.dymovies.utils
 
 import android.app.Activity
 import android.app.Dialog

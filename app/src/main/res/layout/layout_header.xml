@@ -3,9 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/appBar">
 
     <com.google.android.material.appbar.MaterialToolbar
+        tools:title="@string/app_name"
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"/>

@@ -1,7 +1,5 @@
 package xyz.jdynb.dymovies.ui.fragment.search
 
-import android.os.Bundle
-import android.view.View
 import xyz.jdynb.dymovies.base.BaseFragment
 import xyz.jdynb.dymovies.model.vod.VodQueryParams
 
@@ -16,10 +14,6 @@ abstract class SearchFragment : BaseFragment() {
     set(value) {
       vodQueryParams.keyword = value
     }
-
-  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-  }
 
   open fun search() {
     beforeKeyword = keyword

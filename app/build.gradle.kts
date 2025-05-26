@@ -13,15 +13,15 @@ android {
     applicationId = "xyz.jdynb.dymovies"
     minSdk = 24
     targetSdk = 34
-    versionCode = 14
-    versionName = "1.0.9.2"
+    versionCode = 15
+    versionName = "1.0.9.3"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     signingConfig = signingConfigs.getByName("debug")
 
     ndk {
       abiFilters.add("arm64-v8a")
-      abiFilters.add("x86_64")
+      // abiFilters.add("x86_64")
     }
   }
 
@@ -69,7 +69,8 @@ dependencies {
 
   implementation(fileTree("libs"))
   implementation(project(":dyplayer"))
-  implementation(project(":video-cache"))
+  // implementation(project(":video-cache"))
+  // implementation(project(":videocache"))
 
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.appcompat)
